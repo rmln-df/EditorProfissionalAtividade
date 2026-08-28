@@ -132,19 +132,91 @@
     .btn-latex { background: #ffffff; border: 1px solid #2b6cb0; color: #1b365d; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 8.5pt; font-weight: bold; transition: all 0.2s; }
     .btn-latex:hover { background: #2b6cb0; color: white; }
     .latex-preview-box { background: white; border: 1px dashed #2b6cb0; padding: 8px; border-radius: 4px; margin-top: 4px; margin-bottom: 12px; min-height: 35px; font-size: 10pt; }
+    
+#telaInicial {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 
-    #telaInicial { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg,#1b365d,#2b6cb0); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 99999; }
-    #telaInicial h0 { font-size: clamp(70px,10vw,80px); margin-bottom: 10px; text-align: center; }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: #ccc;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.45), transparent 30%),
+    radial-gradient(circle at 85% 75%, rgba(14, 165, 233, 0.30), transparent 32%),
+    radial-gradient(circle at 50% 100%, rgba(37, 99, 235, 0.25), transparent 40%),
+    linear-gradient(135deg, #020617 0%, #071a33 45%, #0b3b66 100%);
+  z-index: 99999;
+}
+
+ #telaInicial h0 {
+  font-size: clamp(70px, 10vw, 100px);
+  margin-bottom: 15px;
+  text-align: center;
+
+  filter:
+    drop-shadow(0 0 10px rgba(255,255,255,0.5))
+    drop-shadow(0 0 25px rgba(59,130,246,0.7));
+
+  animation: brilhoLogo 3s ease-in-out infinite;
+}
+
+@keyframes brilhoLogo {
+  0%, 100% {
+    transform: translateY(0);
+    filter:
+      drop-shadow(0 0 10px rgba(255,255,255,0.5))
+      drop-shadow(0 0 20px rgba(59,130,246,0.5));
+  }
+
+  50% {
+    transform: translateY(-5px);
+    filter:
+      drop-shadow(0 0 15px rgba(255,255,255,0.8))
+      drop-shadow(0 0 35px rgba(59,130,246,0.9));
+  }
+}
+    
     #telaInicial h1 { font-size: clamp(40px,7vw,50px); margin-bottom: 10px; text-align: center; }
     #telaInicial h2 { font-size: clamp(20px,4vw,22px); font-weight: normal; margin-bottom: 25px; text-align: center; }
-    #telaInicial button { width: 85%; max-width: 320px; padding: 16px; font-size: clamp(18px,4vw,22px); border: none; border-radius: 12px; cursor: pointer; background: white; color: #1b365d; font-weight: bold; }
-    #menuPrincipal { width: 210mm; max-width: 95%; margin: 30px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,.15); }
-    #menuPrincipal h2 { text-align: center; color: #1b365d; margin-bottom: 10px; }
-    #menuPrincipal p { text-align: center; margin-bottom: 25px; color: #666; }
-    #menuPrincipal button { width: 100%; padding: 15px; margin-bottom: 12px; font-size: 18px; border: none; border-radius: 10px; background: #1b365d; color: white; cursor: pointer; transition: .3s; }
-    #menuPrincipal button:hover { background: #2b6cb0; }
-    .card { background: #fff; margin: 18px auto; border-radius: 14px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,.15); width: 210mm; max-width: 95%; }
-    .card-titulo { background: #1b365d; color: #fff; padding: 15px; font-size: 20px; font-weight: bold; cursor: pointer; }
+    #telaInicial button {
+  width: 85%;
+  max-width: 320px;
+  padding: 17px 20px;
+  font-size: clamp(18px, 4vw, 22px);
+  font-weight: bold;
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 14px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.96);
+  color: #071a33;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.45),
+    0 0 25px rgba(59,130,246,0.20);
+  transition: all 0.25s ease;
+}
+     #telaInicial button:hover {
+  transform: translateY(-3px) scale(1.02);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 15px 35px rgba(0,0,0,0.50),
+    0 0 35px rgba(59,130,246,0.35);
+}
+     #menuPrincipal { width: 210mm; max-width: 95%; margin: 30px auto; background: #dbeafe; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,.15); }
+     #menuPrincipal h2 { text-align: center; color: #1b365d; margin-bottom: 10px; }
+     #menuPrincipal p { text-align: center; margin-bottom: 25px; color: #666; }
+     #menuPrincipal button { width: 100%; padding: 15px; margin-bottom: 12px; font-size: 18px; border: none; border-radius: 10px; background: #1b365d; color: white; cursor: pointer; transition: .3s; }
+     #menuPrincipal button:hover { background: #2b6cb0; }
+    .card { background: #ccc; margin: 18px auto; border-radius: 14px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,.15); width: 210mm; max-width: 95%; }
+    .card-titulo { background: #1b365d; color: #ccc; padding: 15px; font-size: 20px; font-weight: bold; cursor: pointer; }
     .card-conteudo { padding: 20px; }
     
     /* CABEÇALHO FIXO PARA O BANCO DE QUESTÕES E QUESTÕES ADICIONADAS */
@@ -179,7 +251,7 @@
       box-shadow: 0 3px 10px rgba(0,0,0,.08);
       transition: .25s; 
     }
-    .item-salvo.selecionado {
+     .item-salvo.selecionado {
       background: linear-gradient(135deg,#dbeafe,#bfdbfe);
       border-left: 6px solid #2563eb;
       box-shadow: 0 6px 15px rgba(37,99,235,.25);
@@ -232,9 +304,9 @@
 
   <div id="telaInicial">
     <h0>📚</h0>
-    <h1>EDITOR DE ATIVIDADES</h1>
-    <h2>Editor Profissional de Atividades</h2>
-    <p>Versão 1.3 - Numeração Automática</p>
+    <h1>ATIVIDADE ESCOLAR</h1>
+    <h2>Editor Profissional</h2>
+    <p>Versão 2.0 - Numeração Automática</p>
     <button onclick="abrirSistema()">Entrar</button>
   </div>
 
@@ -242,7 +314,7 @@
 
     <div id="menuPrincipal">
       <h2>📚 EDITOR DE ATIVIDADES</h2>
-      <p>Editor Profissional de Avaliações</p>
+      <p>Elabore Suas Atividades</p>
       <button onclick="abrirNovaProva()">📄 Nova Prova</button>
       <button onclick="abrirBancoQuestoes()">📚 Banco de Questões</button>
       <button onclick="abrirProvasSalvas()">💾 Provas Salvas</button>
@@ -306,8 +378,7 @@
         </div>
       </div>
     </div>
-
-    <!-- EDITOR DE PROVA -->
+     <!-- EDITOR DE PROVA -->
     <div id="editor" style="display:none;">
       
       <!-- CARD DADOS DA PROVA -->
@@ -348,7 +419,7 @@
           </div>
         </div>
       </div>
- <!-- CARD NOVA QUESTÃO / EDIÇÃO -->
+       <!-- CARD NOVA QUESTÃO / EDIÇÃO -->
       <div class="card">
         <div class="card-titulo" id="tituloQuestao" onclick="alternarCard('novaQuestao','tituloQuestao','➕ Nova Questão / Edição')">
           ➕ Nova Questão / Edição ▶
@@ -447,6 +518,7 @@
                 <button class="btn-latex" type="button" onclick="inserirLatex('\\textcolor{blue}{palavra}')">texto azul</button>
                 <button class="btn-latex" type="button" onclick="inserirLatex('\\textcolor{red}{palavra}')">texto vermelho</button>
                 <button class="btn-latex" type="button" onclick="inserirLatex('\\textcolor{green}{palavra}')">texto verde</button>
+                
              </div>
             </div> 
 
@@ -539,11 +611,10 @@
           <div class="banco-scroll-container">
             <div id="listaQuestoes"><p style="color:#777;text-align:center;">Nenhuma questão adicionada.</p></div>
           </div>
-
         </div>
       </div>
-
     </div>
+
     <!-- VISUALIZAÇÃO -->
     <div id="visualizacaoProva" style="display:none; width: 100%;">
       <div class="controls">
@@ -560,7 +631,6 @@
         <div id="documento-paginado"></div>
       </div>
     </div>
-
   </div>
 
   <script>
@@ -570,29 +640,39 @@
     let provaAtualId = null;
 
     /* FUNÇÃO DE PARSER PARA LATEX (KATEX) */
-    function formatarTextoLatex(texto) {
-      if (!texto) return '';
-      let html = texto;
+   function formatarTextoLatex(texto) {
+  if (!texto) return '';
+  let html = texto;
 
-      html = html.replace(/\$\$(.*?)\$\$/g, function(match, expr) {
-        try {
-          return katex.renderToString(expr, { displayMode: true, throwOnError: false });
-        } catch (e) {
-          return match;
-        }
+  // 1. Primeiro processa $$...$$ (modo bloco)
+  html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(match, expr) {
+    try {
+      return katex.renderToString(expr, {
+        displayMode: true,
+        throwOnError: false
       });
-
-      html = html.replace(/\$(.*?)\$/g, function(match, expr) {
-        try {
-          return katex.renderToString(expr, { displayMode: false, throwOnError: false });
-        } catch (e) {
-          return match;
-        }
-      });
-
-      return html;
+    } catch (e) {
+      return match;
     }
-function alternarPainelLatex() {
+  });
+
+  // 2. Depois processa $...$ (modo inline)
+  // Só considera $ como LaTeX quando houver outro $ fechando a expressão.
+  html = html.replace(/\$([^$\n]+?)\$/g, function(match, expr) {
+    try {
+      return katex.renderToString(expr, {
+        displayMode: false,
+        throwOnError: false
+      });
+    } catch (e) {
+      return match;
+    }
+  });
+
+  return html;
+} 
+    
+    function alternarPainelLatex() {
       const painel = document.getElementById("painelLatex");
       painel.style.display = (painel.style.display === "none" || painel.style.display === "") ? "block" : "none";
       if (painel.style.display === "block") {
@@ -614,7 +694,6 @@ function alternarPainelLatex() {
       
       atualizarPreviewLatex();
     }
-
     function atualizarPreviewLatex() {
       const texto = document.getElementById("enunciado").value;
       const preview = document.getElementById("latexPreview");
@@ -764,7 +843,7 @@ function alternarPainelLatex() {
       document.getElementById("secaoLinhas").style.display = tipo === "dissertativa" ? "block" : "none";
     }
 
-    /* RENDERIZAÇÃO DA QUESTÃO NO DOCUMENTO (CORRIGIDO: FILTRO DE VAZIAS + ORDEM ALFABÉTICA) */
+    /* RENDERIZAÇÃO DA QUESTÃO NO DOCUMENTO */
     function gerarHtmlQuestao(q, numeroAuto = null) {
       let prefixoTitulo = numeroAuto !== null ? `QUESTÃO ${numeroAuto}` : (q.titulo || "QUESTÃO");
       let enunciadoFormatado = formatarTextoLatex(q.enunciado);
@@ -810,7 +889,8 @@ function alternarPainelLatex() {
 
       return html;
     }
-function adicionarOuSalvarQuestao() {
+
+    function adicionarOuSalvarQuestao() {
       let titulo = document.getElementById("titulo").value.trim();
       let enunciado = document.getElementById("enunciado").value;
       let tipo = document.getElementById("tipo").value;
@@ -896,6 +976,7 @@ function adicionarOuSalvarQuestao() {
         </button>
       `;
     }
+  
     function limparFormulario() {
       document.getElementById("titulo").value = "";
       document.getElementById("enunciado").value = "";
@@ -963,7 +1044,7 @@ function adicionarOuSalvarQuestao() {
         lista.appendChild(item);
       });
     }
-function excluirQuestao(id) {
+    function excluirQuestao(id) {
       if (confirm("Deseja realmente excluir esta questão da prova?")) {
         if (questaoEmEdicaoId === id) cancelarEdicao();
         questoesArray = questoesArray.filter(q => q.id !== id);
@@ -1014,7 +1095,8 @@ function excluirQuestao(id) {
       localStorage.setItem("provasSalvas", JSON.stringify(provasSalvas));
       alert("✅ Prova '" + titulo + "' salva com sucesso no dispositivo!");
     }
-function renderizarProvasSalvas() {
+
+    function renderizarProvasSalvas() {
       let lista = document.getElementById("listaProvasSalvas");
       let provasSalvas = JSON.parse(localStorage.getItem("provasSalvas") || "[]");
 
@@ -1090,6 +1172,25 @@ function renderizarProvasSalvas() {
     function renderizarBancoQuestoes() {
       let lista = document.getElementById("listaBancoQuestoes");
       let banco = JSON.parse(localStorage.getItem("bancoQuestoes") || "[]");
+      banco.sort((a, b) => {
+    const textoA = String(
+        a.titulo ||
+        a.enunciado ||
+        a.pergunta ||
+        ""
+    ).trim();
+
+    const textoB = String(
+        b.titulo ||
+        b.enunciado ||
+        b.pergunta ||
+        ""
+    ).trim();
+
+    return textoA.localeCompare(textoB, 'pt-BR', {
+        sensitivity: 'base'
+    });
+});
 
       if (banco.length === 0) {
         lista.innerHTML = "<p style='text-align:center; color:#666;'>Nenhuma questão salva no banco.</p>";
@@ -1222,7 +1323,7 @@ function renderizarProvasSalvas() {
       a.download = "backup_provas.json";
       a.click();
     }
-function importarBackup(e) {
+    function importarBackup(e) {
       let file = e.target.files[0];
       if (!file) return;
 
@@ -1400,7 +1501,8 @@ function importarBackup(e) {
       atualizarNavegacao();
       paginas[paginaAtual].scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
- /* REDIMENSIONAMENTO MOBILE */
+
+    /* REDIMENSIONAMENTO MOBILE */
     function ajustarEscolaMobile() {
       const paginas = document.querySelectorAll(".a4-page");
       const margemSeguranca = 24; 
@@ -1523,5 +1625,3 @@ function importarBackup(e) {
   </script>
 </body>
 </html>
-
-                
