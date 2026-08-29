@@ -147,7 +147,7 @@
     .card-titulo { background: #1b365d; color: #fff; padding: 15px; font-size: 20px; font-weight: bold; cursor: pointer; }
     .card-conteudo { padding: 20px; }
     
-    /* CABEÇALHO FIXO PARA O BANCO DE QUESTÕES E QUESTÕES ADICIONADAS */
+    /* CABEÇALHO FIXO PARA O BANCO DE QUESTÕES */
     .sticky-banco-header {
       position: sticky;
       top: 0;
@@ -203,8 +203,8 @@
       break-inside: avoid !important;
     }
     #documento-paginado.modo-pdf .page-wrapper:last-child {
-      page-break-after: avoid !important;
-      break-after: avoid !important;
+      page-break-after: auto !important;
+      break-after: auto !important;
     }
     #documento-paginado.modo-pdf .a4-page {
       width: 210mm !important;
@@ -280,8 +280,7 @@
         </div>
       </div>
     </div>
-
-    <!-- PROVAS SALVAS -->
+<!-- PROVAS SALVAS -->
     <div id="provasSalvas" style="display:none;">
       <div class="card">
         <div class="card-titulo">💾 Provas Salvas no Dispositivo</div>
@@ -306,8 +305,7 @@
         </div>
       </div>
     </div>
-
-    <!-- EDITOR DE PROVA -->
+ <!-- EDITOR DE PROVA -->
     <div id="editor" style="display:none;">
       
       <!-- CARD DADOS DA PROVA -->
@@ -348,7 +346,8 @@
           </div>
         </div>
       </div>
-       <!-- CARD NOVA QUESTÃO / EDIÇÃO -->
+
+      <!-- CARD NOVA QUESTÃO / EDIÇÃO -->
       <div class="card">
         <div class="card-titulo" id="tituloQuestao" onclick="alternarCard('novaQuestao','tituloQuestao','➕ Nova Questão / Edição')">
           ➕ Nova Questão / Edição ▶
@@ -372,6 +371,7 @@
             <button class="btn" type="button" onclick="alternarPainelLatex()" style="background:#2b6cb0; color:white; width:100%; padding:8px; margin-bottom:8px;">
               ∑ Inserir Funções Matemática (LaTeX)
             </button>
+            
             <div style="margin-top:10px;">
               <span style="font-size: 8.5pt; font-weight: bold; color: #1b365d;">Pré-visualização do Enunciado:</span>
               <div id="latexPreview" class="latex-preview-box"></div>
@@ -515,7 +515,7 @@
         </div>
       </div>
 
-      <!-- CARD QUESTÕES ADICIONADAS -->
+      <!-- CARD QUESTÕES ADICIONADAS (REESTRUTURADO COM MENU FIXO NO TOPO) -->
       <div class="card">
         <div class="card-titulo">📋 Questões Adicionadas</div>
         <div class="card-conteudo">
@@ -593,7 +593,6 @@
 
       return html;
     }
-
     function alternarPainelLatex() {
       const painel = document.getElementById("painelLatex");
       painel.style.display = (painel.style.display === "none" || painel.style.display === "") ? "block" : "none";
@@ -686,6 +685,7 @@
       document.getElementById("menuPrincipal").style.display = "none";
       document.getElementById("bancoQuestoes").style.display = "block";
     }
+
     function abrirProvasSalvas() {
       renderizarProvasSalvas();
       document.getElementById("menuPrincipal").style.display = "none";
@@ -766,29 +766,19 @@
       document.getElementById("secaoLinhas").style.display = tipo === "dissertativa" ? "block" : "none";
     }
 
-    /* RENDERIZAÇÃO DA QUESTÃO NO DOCUMENTO */
     function gerarHtmlQuestao(q, numeroAuto = null) {
       let prefixoTitulo = numeroAuto !== null ? `QUESTÃO ${numeroAuto}` : (q.titulo || "QUESTÃO");
       let enunciadoFormatado = formatarTextoLatex(q.enunciado);
       let html = `<div class='questao-titulo'>${prefixoTitulo}</div><p>${enunciadoFormatado}</p>`;
 
       if (q.tipo === "multipla") {
-        const letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-        
-        let rawAlts = [q.altA, q.altB, q.altC, q.altD, q.altE];
-        
-        let alternativasValidas = rawAlts.filter(alt => alt && typeof alt === 'string' && alt.trim() !== '');
-
-        alternativasValidas.sort((a, b) => a.trim().localeCompare(b.trim(), 'pt-BR'));
-
-        if (alternativasValidas.length > 0) {
-          html += `<div class="alternativas-lista">`;
-          alternativasValidas.forEach((texto, i) => {
-            const letra = letras[i] || `${i + 1}`;
-            html += `<div class="alternativa-item">${letra}) ( &nbsp; ) ${formatarTextoLatex(texto)}</div>`;
-          });
-          html += `</div>`;
-        }
+        html += `<div class="alternativas-lista">`;
+        html += `<div class="alternativa-item">a) ( &nbsp; ) ${formatarTextoLatex(q.altA || '')}</div>`;
+        html += `<div class="alternativa-item">b) ( &nbsp; ) ${formatarTextoLatex(q.altB || '')}</div>`;
+        html += `<div class="alternativa-item">c) ( &nbsp; ) ${formatarTextoLatex(q.altC || '')}</div>`;
+        html += `<div class="alternativa-item">d) ( &nbsp; ) ${formatarTextoLatex(q.altD || '')}</div>`;
+        html += `<div class="alternativa-item">e) ( &nbsp; ) ${formatarTextoLatex(q.altE || '')}</div>`;
+        html += `</div>`;
       } else if (q.tipo === "ce") {
         html += "<p>CERTO ( ) &nbsp;&nbsp; ERRADO ( )</p>";
       } else if (q.tipo === "vf") {
@@ -848,7 +838,6 @@
       salvarQuestaoNoBanco(dadosQuestao);
       renderizarListaEditor();
     }
-
     function editarQuestao(id) {
       let q = questoesArray.find(item => item.id === id);
       if (!q) return;
@@ -1087,7 +1076,7 @@
       localStorage.setItem("bancoQuestoes", JSON.stringify(banco));
     }
 
-    /* RENDERIZAÇÃO DO BANCO (CORRIGIDO: ORDENAÇÃO ALFABÉTICA POR TÍTULO/IDENTIFICADOR) */
+    /* RENDERIZAÇÃO DO BANCO */
     function renderizarBancoQuestoes() {
       let lista = document.getElementById("listaBancoQuestoes");
       let banco = JSON.parse(localStorage.getItem("bancoQuestoes") || "[]");
@@ -1096,13 +1085,6 @@
         lista.innerHTML = "<p style='text-align:center; color:#666;'>Nenhuma questão salva no banco.</p>";
         return;
       }
-
-      // Ordena o array em ordem alfabética de A a Z pelo título do identificador
-      banco.sort((a, b) => {
-        const tituloA = (a.titulo || 'Questão').toString();
-        const tituloB = (b.titulo || 'Questão').toString();
-        return tituloA.localeCompare(tituloB, 'pt-BR', { sensitivity: 'base' });
-      });
 
       lista.innerHTML = "";
       banco.forEach(q => {
@@ -1318,7 +1300,6 @@
       atualizarNavegacao();
       ajustarEscolaMobile();
     }
-
     function criarEstruturaPagina(numPagina) {
       const page = document.createElement('div');
       page.className = 'a4-page';
@@ -1384,6 +1365,7 @@
       `;
       return page;
     }
+
     function atualizarNavegacao() {
       const paginas = document.querySelectorAll('.a4-page');
       const indicator = document.getElementById('page-indicator');
@@ -1458,7 +1440,7 @@
       document.getElementById("editor").style.display = "block";
     }
 
-    /* GERAÇÃO DIRETA DE PDF (CORRIGIDO: REMOÇÃO DA PÁGINA EM BRANCO EXTRA) */
+    /* GERAÇÃO DIRETA DE PDF */
     function gerarPDFDireto() {
       const elemento = document.getElementById("documento-paginado");
       const btn = document.getElementById("btnDownloadPDF");
