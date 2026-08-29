@@ -291,7 +291,6 @@
         </div>
       </div>
     </div>
-
     <!-- CONFIGURAÇÕES -->
     <div id="configuracoes" style="display:none;">
       <div class="card">
@@ -449,8 +448,7 @@
                 <button class="btn-latex" type="button" onclick="inserirLatex('\\textcolor{green}{palavra}')">texto verde</button>
              </div>
             </div> 
-
-            <div id="secaoMultiplaEscolha" style="display:none; border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #edf2f7;">
+             <div id="secaoMultiplaEscolha" style="display:none; border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #edf2f7;">
               <strong style="color: #1b365d;">Alternativas:</strong>
               <label for="altA">A)</label><input type="text" id="altA" placeholder="Texto da alternativa A">
               <label for="altB">B)</label><input type="text" id="altB" placeholder="Texto da alternativa B">
@@ -732,7 +730,6 @@
       };
       reader.readAsDataURL(file);
     }
-
     function atualizarPreviewLogoInstituicao() {
       const logo = localStorage.getItem("logoInstituicao") || "";
       const box = document.getElementById("previewLogoInstituicao");
@@ -987,7 +984,6 @@
         alert("Todas as questões foram removidas da prova atual.");
       }
     }
-
     /* ARMAZENAMENTO LOCAL */
     function salvarProvaAtual() {
       if (!provaAtualId) {
@@ -1245,7 +1241,6 @@
       };
       reader.readAsText(file);
     }
-
     function limparTudo() {
       if (confirm("Tem certeza que deseja apagar todas as provas e questões salvas no aparelho?")) {
         localStorage.clear();
