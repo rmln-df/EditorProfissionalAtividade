@@ -974,7 +974,7 @@ function formatarTextoLatex(texto) {
       }
     }
 
-    /* RENDERIZAÇÃO DA LISTA NO EDITOR */
+        /* RENDERIZAÇÃO DA LISTA NO EDITOR (PADRONIZADA) */
     function renderizarListaEditor() {
       let lista = document.getElementById("listaQuestoes");
       if (questoesArray.length === 0) {
@@ -984,26 +984,28 @@ function formatarTextoLatex(texto) {
       lista.innerHTML = "";
       questoesArray.forEach((q, idx) => {
         let item = document.createElement("div");
-        item.style.borderBottom = "1px solid #ddd";
-        item.style.padding = "10px 0";
+        item.className = "item-salvo"; // Aplica o mesmo card branco/azulado do Banco
+        item.style.marginBottom = "10px";
 
         let textoGabarito = q.gabarito ? formatarTextoLatex(q.gabarito) : "<em style='color:#888;'>Gabarito não informado.</em>";
 
         item.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-            <div>
-              <strong>Questão ${idx + 1}</strong> <small style="color:#666;">(${q.tipo})</small><br>
-              <small style="color:#555;">${q.enunciado ? q.enunciado.substring(0, 40) : ''}...</small>
+          <div style="width: 100%;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div>
+                <strong style="color:#1b365d;">Questão ${idx + 1}</strong> <small style="color:#666;">(${q.tipo})</small><br>
+                <small style="color:#333;">${q.enunciado ? q.enunciado.substring(0, 50) : ''}...</small>
+              </div>
+              <div>
+                <button class="btn-gabarito-item" onclick="alternarGabaritoLista(${q.id})">👁️ Gabarito</button>
+                <button class="btn-edit" onclick="editarQuestao(${q.id})">✏️ Editar</button>
+                <button class="btn-delete" onclick="excluirQuestao(${q.id})">🗑 Excluir</button>
+              </div>
             </div>
-            <div>
-              <button class="btn-gabarito-item" onclick="alternarGabaritoLista(${q.id})">👁️ Gabarito</button>
-              <button class="btn-edit" onclick="editarQuestao(${q.id})">✏️ Editar</button>
-              <button class="btn-delete" onclick="excluirQuestao(${q.id})">🗑 Excluir</button>
+            <div id="gabarito-box-${q.id}" style="display:none; margin-top:10px; padding:10px; background:#ffffff; border-left:4px solid #2b6cb0; border-radius:4px; font-size:9pt; color:#333;">
+              <strong style="color:#1b365d;">Resposta / Gabarito:</strong>
+              <div style="margin-top:4px;">${textoGabarito}</div>
             </div>
-          </div>
-          <div id="gabarito-box-${q.id}" style="display:none; margin-top:10px; padding:10px; background:#edf2f7; border-left:4px solid #2b6cb0; border-radius:4px; font-size:9pt;">
-            <strong style="color:#1b365d;">Resposta / Gabarito:</strong>
-            <div style="margin-top:4px;">${textoGabarito}</div>
           </div>
         `;
         lista.appendChild(item);
