@@ -572,27 +572,69 @@
     let provaAtualId = null;
 
     /* FUNÇÃO DE PARSER PARA LATEX (KATEX) */
-    function formatarTextoLatex(texto) {
-      if (!texto) return '';
-      let html = texto;
+function formatarTextoLatex(texto) {
+  if (!texto) return '';
 
-      html = html.replace(/\$\$(.*?)\$\$/g, function(match, expr) {
-        try {
-          return katex.renderToString(expr, { displayMode: true, throwOnError: false });
-        } catch (e) {
-          return match;
-        }
+  let html = texto;
+
+  /*
+   * PROTEÇÃO DO SÍMBOLO R$
+   *
+   * O KaTeX usa $ como delimitador de matemática.
+   * Por isso, antes de processar o LaTeX,
+   * protegemos o $ de valores monetários como:
+   *
+   * R$50,00
+   * R$ 50,00
+   * R$1.250,00
+   * R$ 1.250,50
+   */
+
+  const simbolosMoeda = [];
+
+  html = html.replace(/R\$(?=\s*\d)/gi, function(match) {
+    const marcador = `\uE000MOEDA${simbolosMoeda.length}\uE001`;
+    simbolosMoeda.push(match);
+    return marcador;
+  });
+
+  /*
+   * PROCESSA EQUAÇÕES EM $$...$$
+   */
+  html = html.replace(/\$\$(.*?)\$\$/gs, function(match, expr) {
+    try {
+      return katex.renderToString(expr, {
+        displayMode: true,
+        throwOnError: false
       });
+    } catch (e) {
+      return match;
+    }
+  });
 
-      html = html.replace(/\$(.*?)\$/g, function(match, expr) {
-        try {
-          return katex.renderToString(expr, { displayMode: false, throwOnError: false });
-        } catch (e) {
-          return match;
-        }
+  /*
+   * PROCESSA EQUAÇÕES EM $...$
+   */
+  html = html.replace(/\$(.*?)\$/gs, function(match, expr) {
+    try {
+      return katex.renderToString(expr, {
+        displayMode: false,
+        throwOnError: false
       });
+    } catch (e) {
+      return match;
+    }
+  });
 
-      return html;
+  /*
+   * RESTAURA OS SÍMBOLOS R$
+   */
+  simbolosMoeda.forEach(function(simbolo, indice) {
+    const marcador = `\uE000MOEDA${indice}\uE001`;
+    html = html.split(marcador).join(simbolo);
+  });
+
+  return html;
     }
 
     function alternarPainelLatex() {
