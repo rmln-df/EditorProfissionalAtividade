@@ -1146,7 +1146,18 @@ function formatarTextoLatex(texto) {
       }
 
       lista.innerHTML = "";
-      banco.forEach(q => {
+
+// ORDENAR O BANCO DE QUESTÕES EM ORDEM ALFABÉTICA
+banco.sort((a, b) => {
+  const tituloA = (a.titulo || "Questão").trim();
+  const tituloB = (b.titulo || "Questão").trim();
+
+  return tituloA.localeCompare(tituloB, "pt-BR", {
+    sensitivity: "base"
+  });
+});
+
+banco.forEach(q => {
         let div = document.createElement("div");
         div.className = "item-salvo";
         div.innerHTML = `
