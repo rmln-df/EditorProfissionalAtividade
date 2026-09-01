@@ -73,6 +73,80 @@
       gap: 10px;
       position: relative;
     }
+    
+    
+    
+    
+    
+    /* ESTILOS PERSONALIZADOS DO CABEÇALHO */
+
+.header-estilo-azul {
+  background-color: #2b6cb0 !important;
+  color: #ffffff !important;
+  border: 2px solid #2b6cb0;
+}
+
+.header-estilo-verde {
+  background-color: #276749 !important;
+  color: #ffffff !important;
+  border: 2px solid #276749;
+}
+
+.header-estilo-amarelo {
+  background-color: #d69e2e !important;
+  color: #ffffff !important;
+  border: 2px solid #d69e2e;
+}
+
+.header-estilo-vermelho {
+  background-color: #c53030 !important;
+  color: #ffffff !important;
+  border: 2px solid #c53030;
+}
+
+.header-estilo-roxo {
+  background-color: #6b46c1 !important;
+  color: #ffffff !important;
+  border: 2px solid #6b46c1;
+}
+
+.header-estilo-cinza {
+  background-color: #374151 !important;
+  color: #ffffff !important;
+  border: 2px solid #374151;
+}
+
+/* FUNDO BRANCO + BORDA */
+
+.header-estilo-branco-azul {
+  background-color: #ffffff !important;
+  color: #1b365d !important;
+  border: 2px solid #2b6cb0;
+}
+
+.header-estilo-branco-verde {
+  background-color: #ffffff !important;
+  color: #276749 !important;
+  border: 2px solid #276749;
+}
+
+.header-estilo-branco-vermelho {
+  background-color: #ffffff !important;
+  color: #c53030 !important;
+  border: 2px solid #c53030;
+}
+
+.header-estilo-branco-roxo {
+  background-color: #ffffff !important;
+  color: #6b46c1 !important;
+  border: 2px solid #6b46c1;
+}
+    
+    
+    
+    
+    
+    
     .header-logo {
       width: 48px;
       height: 48px;
@@ -330,6 +404,31 @@
 
             <label for="data">Data</label>
             <input type="date" id="data">
+            
+            
+            
+            
+            <div class="campo-formulario">
+  <label for="estiloCabecalho">🎨 Estilo do Cabeçalho</label>
+
+  <select id="estiloCabecalho" onchange="alterarEstiloCabecalho()">
+    <option value="azul">🔵 Azul sólido</option>
+    <option value="verde">🟢 Verde sólido</option>
+    <option value="amarelo">🟡 Amarelo sólido</option>
+    <option value="vermelho">🔴 Vermelho sólido</option>
+    <option value="roxo">🟣 Roxo sólido</option>
+    <option value="cinza">⚫ Cinza escuro</option>
+    <option value="branco-azul">⚪ Branco + borda azul</option>
+    <option value="branco-verde">⚪ Branco + borda verde</option>
+    <option value="branco-vermelho">⚪ Branco + borda vermelha</option>
+    <option value="branco-roxo">⚪ Branco + borda roxa</option>
+  </select>
+</div>
+
+
+
+
+
 
             <label for="logoInstituicao">Logo / Imagem da Instituição</label>
             <input type="file" id="logoInstituicao" accept="image/*" onchange="carregarLogoInstituicao(event)" style="padding:8px; background:#fff;">
@@ -689,6 +788,21 @@ function formatarTextoLatex(texto) {
       document.getElementById("professor").value = "";
       document.getElementById("turma").value = "";
       document.getElementById("data").value = "";
+      
+      
+      
+      
+      const estiloSalvo = localStorage.getItem("estiloCabecalho") || "azul";
+const seletorEstilo = document.getElementById("estiloCabecalho");
+
+if (seletorEstilo) {
+  seletorEstilo.value = estiloSalvo;
+}
+      
+      
+      
+      
+      
       atualizarPreviewLogoInstituicao();
 
       document.getElementById("dadosProva").style.display = "none";
@@ -1042,10 +1156,25 @@ function formatarTextoLatex(texto) {
       let provaData = {
         id: provaAtualId,
         titulo: titulo,
-        disciplina: document.getElementById("disciplina").value,
-        professor: document.getElementById("professor").value,
-        turma: document.getElementById("turma").value,
-        data: document.getElementById("data").value,
+        disciplina: 
+        document.getElementById("disciplina").value,
+        professor: 
+        document.getElementById("professor").value,
+        turma: 
+        document.getElementById("turma").value,
+        data:
+        document.getElementById("data").value,
+        
+        
+        
+        
+        estiloCabecalho: 
+        document.getElementById("estiloCabecalho")?.value || "azul",
+        
+        
+        
+        
+        
         logoInstituicao: localStorage.getItem("logoInstituicao") || "",
         questoes: questoesArray
       };
@@ -1101,6 +1230,20 @@ function formatarTextoLatex(texto) {
       document.getElementById("professor").value = prova.professor || "";
       document.getElementById("turma").value = prova.turma || "";
       document.getElementById("data").value = prova.data || "";
+      
+      
+      
+      
+      const seletorEstilo = document.getElementById("estiloCabecalho");
+
+if (seletorEstilo) {
+  seletorEstilo.value = prova.estiloCabecalho || "azul";
+}
+      
+      
+      
+      
+      
       if (prova.logoInstituicao) {
         localStorage.setItem("logoInstituicao", prova.logoInstituicao);
       } else {
@@ -1369,6 +1512,28 @@ banco.forEach(q => {
       atualizarNavegacao();
       ajustarEscolaMobile();
     }
+    
+    
+    
+    
+    
+    function alterarEstiloCabecalho() {
+  const seletor = document.getElementById("estiloCabecalho");
+
+  if (!seletor) return;
+
+  localStorage.setItem("estiloCabecalho", seletor.value);
+
+  // Atualiza a visualização da prova
+  if (typeof paginarDocumento === "function") {
+    paginarDocumento();
+  }
+}
+    
+    
+    
+    
+    
 
     function criarEstruturaPagina(numPagina) {
       const page = document.createElement('div');
@@ -1383,6 +1548,20 @@ banco.forEach(q => {
       let professorVal = document.getElementById("professor").value.trim();
       let turmaVal = document.getElementById("turma").value.trim();
       let logoInstituicao = localStorage.getItem("logoInstituicao") || "";
+      
+      
+      
+      
+      
+      let estiloCabecalho =
+  document.getElementById("estiloCabecalho")?.value || "azul";
+
+let classeCabecalho = "header-estilo-" + estiloCabecalho;
+      
+      
+      
+      
+      
 
       let dataRaw = document.getElementById("data").value;
       let dataVal = "____/____/________";
@@ -1394,7 +1573,7 @@ banco.forEach(q => {
       if (numPagina === 1) {
         const logoHtml = logoInstituicao ? `<img class="header-logo" src="${logoInstituicao}" alt="Logo da instituição">` : "";
         headerHtml = `
-          <div class="header-bar">
+          <div class="header-bar ${classeCabecalho}">
             ${logoHtml}
             <div class="header-bar-conteudo">
               <h1>${tituloVal}</h1>
