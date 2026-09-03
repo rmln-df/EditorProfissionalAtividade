@@ -74,10 +74,6 @@
       position: relative;
     }
     
-    
-    
-    
-    
     /* ESTILOS PERSONALIZADOS DO CABEÇALHO */
 
 .header-estilo-azul {
@@ -141,12 +137,6 @@
   color: #6b46c1 !important;
   border: 2px solid #6b46c1;
 }
-    
-    
-    
-    
-    
-    
     .header-logo {
       width: 48px;
       height: 48px;
@@ -404,10 +394,7 @@
 
             <label for="data">Data</label>
             <input type="date" id="data">
-            
-            
-            
-            
+          
             <div class="campo-formulario">
   <label for="estiloCabecalho">🎨 Estilo do Cabeçalho</label>
 
@@ -424,11 +411,6 @@
     <option value="branco-roxo">⚪ Branco + borda roxa</option>
   </select>
 </div>
-
-
-
-
-
 
             <label for="logoInstituicao">Logo / Imagem da Instituição</label>
             <input type="file" id="logoInstituicao" accept="image/*" onchange="carregarLogoInstituicao(event)" style="padding:8px; background:#fff;">
@@ -547,8 +529,42 @@
                 <button class="btn-latex" type="button" onclick="inserirLatex('\\textcolor{green}{palavra}')">texto verde</button>
                 
              </div>
-            </div> 
+            </div>
+            
+                        <!-- ÁREA DE FIGURAS GEOMÉTRICAS PARAMETRIZADAS -->
+            <div style="border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #f0f4f8;">
+              <strong style="color: #1b365d; display: block; margin-bottom: 6px;">📐 Inserir Figura Geométrica com Medidas:</strong>
+              
+              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <select id="figuraTipo" style="flex: 2; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+  <option value="">Selecione a figura...</option>
+  <option value="quadrado">Quadrado</option>
+  <option value="retangulo">Retângulo</option>
+  <option value="triangulo_retangulo">Triângulo Retângulo</option>
+  <option value="triangulo_equilatero">Triângulo Equilátero</option>
+  <option value="triangulo_isosceles">Triângulo Isósceles</option>
+  <option value="triangulo_escaleno">Triângulo Escaleno</option>
+  <option value="trapezio_retangulo">Trapézio Retângulo</option>
+  <option value="trapezio_isosceles">Trapézio Isósceles</option>
+  <option value="paralelogramo">Paralelogramo</option>
+  <option value="losango">Losango</option>
+  <option value="circulo">Círculo / Circunferência</option>
+  <option value="cilindro">Cilindro (Espacial)</option>
+</select>
 
+                <input type="text" id="figuraBase" placeholder="Base (ex: 10cm)" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <input type="text" id="figuraAltura" placeholder="Altura (ex: 5cm)" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                <input type="text" id="figuraExtra" placeholder="Outra medida / Ângulo" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+              </div>
+
+              <button type="button" class="btn" style="background:#2b6cb0; color:white; width:100%; padding:8px;" onclick="inserirFiguraNoEnunciado()">
+                ➕ Inserir Desenho com Medidas no Enunciado
+              </button>
+            </div>
+            
             <div id="secaoMultiplaEscolha" style="display:none; border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #edf2f7;">
               <strong style="color: #1b365d;">Alternativas:</strong>
               <label for="altA">A)</label><input type="text" id="altA" placeholder="Texto da alternativa A">
@@ -789,19 +805,12 @@ function formatarTextoLatex(texto) {
       document.getElementById("turma").value = "";
       document.getElementById("data").value = "";
       
-      
-      
-      
       const estiloSalvo = localStorage.getItem("estiloCabecalho") || "azul";
 const seletorEstilo = document.getElementById("estiloCabecalho");
 
 if (seletorEstilo) {
   seletorEstilo.value = estiloSalvo;
 }
-      
-      
-      
-      
       
       atualizarPreviewLogoInstituicao();
 
@@ -1165,15 +1174,8 @@ if (seletorEstilo) {
         data:
         document.getElementById("data").value,
         
-        
-        
-        
         estiloCabecalho: 
         document.getElementById("estiloCabecalho")?.value || "azul",
-        
-        
-        
-        
         
         logoInstituicao: localStorage.getItem("logoInstituicao") || "",
         questoes: questoesArray
@@ -1231,18 +1233,11 @@ if (seletorEstilo) {
       document.getElementById("turma").value = prova.turma || "";
       document.getElementById("data").value = prova.data || "";
       
-      
-      
-      
       const seletorEstilo = document.getElementById("estiloCabecalho");
 
 if (seletorEstilo) {
   seletorEstilo.value = prova.estiloCabecalho || "azul";
 }
-      
-      
-      
-      
       
       if (prova.logoInstituicao) {
         localStorage.setItem("logoInstituicao", prova.logoInstituicao);
@@ -1513,10 +1508,6 @@ banco.forEach(q => {
       ajustarEscolaMobile();
     }
     
-    
-    
-    
-    
     function alterarEstiloCabecalho() {
   const seletor = document.getElementById("estiloCabecalho");
 
@@ -1530,11 +1521,6 @@ banco.forEach(q => {
   }
 }
     
-    
-    
-    
-    
-
     function criarEstruturaPagina(numPagina) {
       const page = document.createElement('div');
       page.className = 'a4-page';
@@ -1549,20 +1535,11 @@ banco.forEach(q => {
       let turmaVal = document.getElementById("turma").value.trim();
       let logoInstituicao = localStorage.getItem("logoInstituicao") || "";
       
-      
-      
-      
-      
       let estiloCabecalho =
   document.getElementById("estiloCabecalho")?.value || "azul";
 
 let classeCabecalho = "header-estilo-" + estiloCabecalho;
       
-      
-      
-      
-      
-
       let dataRaw = document.getElementById("data").value;
       let dataVal = "____/____/________";
       if (dataRaw) {
@@ -1896,6 +1873,447 @@ let classeCabecalho = "header-estilo-" + estiloCabecalho;
     };
 
     window.onresize = ajustarEscolaMobile;
+    
+            function geradorSVGFigura(tipo, base, altura, extra) {
+  // Trata os campos para garantir string vazia se nada for digitado
+  const b = base ? base.trim() : "";
+  const h = altura ? altura.trim() : "";
+  const e = extra ? extra.trim() : "";
+
+  switch (tipo) {
+    case "quadrado":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="background:#fff; border-radius:4px;">
+            <rect x="25" y="20" width="70" height="70" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${b ? `<text x="60" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="15" y="58" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="60" y="58" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "retangulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="100" viewBox="0 0 160 100" style="background:#fff; border-radius:4px;">
+            <rect x="25" y="20" width="110" height="60" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${b ? `<text x="80" y="94" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="15" y="54" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="80" y="52" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "triangulo_retangulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 25,20" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <rect x="25" y="80" width="10" height="10" fill="none" stroke="#1b365d" stroke-width="1"/>
+            <circle cx="30" cy="85" r="1.5" fill="#1b365d"/>
+            ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="14" y="58" font-size="11" fill="#c53030" text-anchor="middle" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="90" y="50" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "triangulo_equilatero":
+    case "triangulo_isosceles":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 80,20" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${h ? `<line x1="80" y1="20" x2="80" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="72" y="58" font-size="11" fill="#c53030" text-anchor="end" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="115" y="50" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "triangulo_escaleno":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="15,90 145,90 55,20" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${h ? `<line x1="55" y1="20" x2="55" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="47" y="58" font-size="11" fill="#c53030" text-anchor="end" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="110" y="50" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "trapezio_retangulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 95,25 25,25" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <rect x="25" y="80" width="10" height="10" fill="none" stroke="#1b365d" stroke-width="1"/>
+            ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${e ? `<text x="60" y="18" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${e}</text>` : ''}
+            ${h ? `<text x="14" y="60" font-size="11" fill="#c53030" text-anchor="middle" font-weight="bold">${h}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "trapezio_isosceles":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="180" height="110" viewBox="0 0 180 110" style="background:#fff; border-radius:4px;">
+            <polygon points="20,90 160,90 125,25 55,25" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${h ? `<line x1="75" y1="25" x2="75" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${b ? `<text x="90" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${e ? `<text x="90" y="18" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${e}</text>` : ''}
+            ${h ? `<text x="83" y="60" font-size="11" fill="#c53030" text-anchor="start" font-weight="bold">${h}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "paralelogramo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="180" height="110" viewBox="0 0 180 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 155,25 45,25" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${h ? `<line x1="65" y1="25" x2="65" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="73" y="60" font-size="11" fill="#c53030" text-anchor="start" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="160" y="60" font-size="10" fill="#2b6cb0" text-anchor="start">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "losango":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="140" height="120" viewBox="0 0 140 120" style="background:#fff; border-radius:4px;">
+            <polygon points="70,10 125,60 70,110 15,60" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${b ? `<line x1="15" y1="60" x2="125" y2="60" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${h ? `<line x1="70" y1="10" x2="70" y2="110" stroke="#2b6cb0" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${b ? `<text x="100" y="53" font-size="10" fill="#c53030" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="78" y="35" font-size="10" fill="#2b6cb0" text-anchor="start" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="100" y="90" font-size="10" fill="#1b365d" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+    case "circulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="background:#fff; border-radius:4px;">
+            <circle cx="60" cy="60" r="45" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <circle cx="60" cy="60" r="3" fill="#1b365d"/>
+            ${(b || e) ? `
+              <line x1="60" y1="60" x2="105" y2="60" stroke="#c53030" stroke-width="1.5"/>
+              <text x="80" y="53" font-size="11" fill="#c53030" text-anchor="middle" font-weight="bold">${b || e}</text>
+            ` : ''}
+          </svg>
+        </div>`;
+
+    case "cilindro":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="140" viewBox="0 0 160 140" style="background:#fff; border-radius:4px;">
+            <ellipse cx="70" cy="35" rx="40" ry="12" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <path d="M 30,35 L 30,110 A 40 12 0 0 0 110,110 L 110,35" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <path d="M 30,110 A 40 12 0 0 1 110,110" fill="none" stroke="#1b365d" stroke-width="1.5" stroke-dasharray="3,3"/>
+            ${e ? `
+              <line x1="70" y1="35" x2="110" y2="35" stroke="#2b6cb0" stroke-width="1.5"/>
+              <circle cx="70" cy="35" r="2.5" fill="#1b365d"/>
+              <text x="90" y="27" font-size="11" fill="#2b6cb0" text-anchor="middle" font-weight="bold">${e}</text>
+            ` : ''}
+            ${h ? `
+              <line x1="110" y1="35" x2="110" y2="110" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <text x="122" y="75" font-size="11" fill="#c53030" text-anchor="start" font-weight="bold">${h}</text>
+            ` : ''}
+            ${b ? `<text x="70" y="132" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+          </svg>
+        </div>`;
+
+    default:
+      return "";
+  }
+}
+
+           function geradorSVGFigura(tipo, base, altura, extra) {
+  let b = base || "b";
+  let h = altura || "h";
+  let e = extra || "";
+
+  switch (tipo) {
+          case "quadrado":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="background:#fff; border-radius:4px;">
+            <rect x="25" y="20" width="70" height="70" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <text x="60" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>
+            <text x="15" y="58" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${h || b}</text>
+            ${e ? `<text x="60" y="58" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+          case "retangulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="100" viewBox="0 0 160 100" style="background:#fff; border-radius:4px;">
+            <rect x="25" y="20" width="110" height="60" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <text x="80" y="94" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>
+            <text x="15" y="54" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${h}</text>
+            ${e ? `<text x="80" y="52" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+          case "triangulo_retangulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 25,20" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <rect x="25" y="80" width="10" height="10" fill="none" stroke="#1b365d" stroke-width="1"/>
+            <circle cx="30" cy="85" r="1.5" fill="#1b365d"/>
+            <text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>
+            <text x="14" y="58" font-size="11" fill="#c53030" text-anchor="middle" font-weight="bold">${h}</text>
+            ${e ? `<text x="90" y="50" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+          case "triangulo_equilatero":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 80,20" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <line x1="80" y1="20" x2="80" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>
+            <text x="72" y="58" font-size="11" fill="#c53030" text-anchor="end" font-weight="bold">${h}</text>
+            ${e ? `<text x="115" y="50" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+          case "triangulo_isosceles":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="120" viewBox="0 0 160 120" style="background:#fff; border-radius:4px;">
+            <!-- Base estreita e lados mais longos (Triângulo Isósceles) -->
+            <polygon points="45,100 115,100 80,10" fill="none" stroke="#1b365d" stroke-width="2"/>
+            ${h ? `<line x1="80" y1="10" x2="80" y2="100" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>` : ''}
+            ${b ? `<text x="80" y="115" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
+            ${h ? `<text x="72" y="60" font-size="11" fill="#c53030" text-anchor="end" font-weight="bold">${h}</text>` : ''}
+            ${e ? `<text x="108" y="55" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+          case "triangulo_escaleno":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+            <polygon points="15,90 145,90 55,20" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <line x1="55" y1="20" x2="55" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>
+            <text x="47" y="58" font-size="11" fill="#c53030" text-anchor="end" font-weight="bold">${h}</text>
+            ${e ? `<text x="110" y="50" font-size="10" fill="#2b6cb0" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+          case "trapezio_retangulo": {
+      const valorBase = base ? base.trim() : "";
+      const valorAltura = altura ? altura.trim() : "";
+      const valorExtra = extra ? extra.trim() : "";
+
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
+
+            <polygon points="25,90 135,90 95,25 25,25"
+                     fill="none"
+                     stroke="#1b365d"
+                     stroke-width="2"/>
+
+            <!-- Ângulo reto -->
+            <rect x="25" y="80" width="10" height="10"
+                  fill="none"
+                  stroke="#1b365d"
+                  stroke-width="1"/>
+
+            <!-- Base maior: somente se foi digitada -->
+            ${valorBase !== "" ? `
+              <text x="80" y="105"
+                    font-size="11"
+                    fill="#1b365d"
+                    text-anchor="middle"
+                    font-weight="bold">${valorBase}</text>
+            ` : ''}
+
+            <!-- Base menor: somente se foi digitada -->
+            ${valorExtra !== "" ? `
+              <text x="60" y="18"
+                    font-size="11"
+                    fill="#1b365d"
+                    text-anchor="middle"
+                    font-weight="bold">${valorExtra}</text>
+            ` : ''}
+
+            <!-- Altura: somente se foi digitada -->
+            ${valorAltura !== "" ? `
+              <text x="14" y="60"
+                    font-size="11"
+                    fill="#c53030"
+                    text-anchor="middle"
+                    font-weight="bold">${valorAltura}</text>
+            ` : ''}
+
+          </svg>
+        </div>`;
+    }
+    
+          case "trapezio_isosceles": {
+      const valorBase = base ? base.trim() : "";
+      const valorAltura = altura ? altura.trim() : "";
+      const valorExtra = extra ? extra.trim() : "";
+
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="180" height="110" viewBox="0 0 180 110"
+               style="background:#fff; border-radius:4px;">
+
+            <!-- Trapézio Isósceles -->
+            <polygon points="20,90 160,90 125,25 55,25"
+                     fill="none"
+                     stroke="#1b365d"
+                     stroke-width="2"/>
+
+            <!-- Altura central: somente se a altura foi digitada -->
+            ${valorAltura !== "" ? `
+              <line x1="90" y1="25"
+                    x2="90" y2="90"
+                    stroke="#c53030"
+                    stroke-width="1.5"
+                    stroke-dasharray="3,3"/>
+            ` : ''}
+
+            <!-- Base maior -->
+            ${valorBase !== "" ? `
+              <text x="90" y="105"
+                    font-size="11"
+                    fill="#1b365d"
+                    text-anchor="middle"
+                    font-weight="bold">${valorBase}</text>
+            ` : ''}
+
+            <!-- Base menor -->
+            ${valorExtra !== "" ? `
+              <text x="90" y="18"
+                    font-size="11"
+                    fill="#1b365d"
+                    text-anchor="middle"
+                    font-weight="bold">${valorExtra}</text>
+            ` : ''}
+
+            <!-- Altura -->
+            ${valorAltura !== "" ? `
+              <text x="96" y="60"
+                    font-size="11"
+                    fill="#c53030"
+                    text-anchor="start"
+                    font-weight="bold">${valorAltura}</text>
+            ` : ''}
+
+          </svg>
+        </div>`;
+    }
+
+          case "paralelogramo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="180" height="110" viewBox="0 0 180 110" style="background:#fff; border-radius:4px;">
+            <polygon points="25,90 135,90 155,25 45,25" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <!-- Linha da altura interna deslocada para dentro da figura -->
+            <line x1="65" y1="25" x2="65" y2="90" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>
+            <!-- Texto da altura posicionado à direita da linha, 100% dentro da figura -->
+            <text x="73" y="60" font-size="11" fill="#c53030" text-anchor="start" font-weight="bold">${h}</text>
+            ${e ? `<text x="160" y="60" font-size="10" fill="#2b6cb0" text-anchor="start">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+          case "losango":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="140" height="120" viewBox="0 0 140 120" style="background:#fff; border-radius:4px;">
+            <polygon points="70,10 125,60 70,110 15,60" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <line x1="15" y1="60" x2="125" y2="60" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="70" y1="10" x2="70" y2="110" stroke="#2b6cb0" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <text x="100" y="53" font-size="10" fill="#c53030" text-anchor="middle" font-weight="bold">${b || 'D'}</text>
+            <text x="78" y="35" font-size="10" fill="#2b6cb0" text-anchor="start" font-weight="bold">${h || 'd'}</text>
+            ${e ? `<text x="100" y="90" font-size="10" fill="#1b365d" text-anchor="middle">${e}</text>` : ''}
+          </svg>
+        </div>`;
+
+             case "circulo":
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="background:#fff; border-radius:4px;">
+            <circle cx="60" cy="60" r="45" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <line x1="60" y1="60" x2="105" y2="60" stroke="#c53030" stroke-width="1.5"/>
+            <circle cx="60" cy="60" r="3" fill="#1b365d"/>
+            <text x="80" y="53" font-size="11" fill="#c53030" text-anchor="middle" font-weight="bold">${b || e || 'r'}</text>
+          </svg>
+        </div>`;
+
+              case "cilindro":
+      const valBase = base ? base.trim() : "";
+      const valAltura = altura ? altura.trim() : "";
+      const valExtra = extra ? extra.trim() : "";
+
+      return `
+        <div style="text-align:center; margin: 10px 0;">
+          <svg width="160" height="140" viewBox="0 0 160 140" style="background:#fff; border-radius:4px;">
+            <!-- Corpo do Cilindro -->
+            <ellipse cx="70" cy="35" rx="40" ry="12" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <path d="M 30,35 L 30,110 A 40 12 0 0 0 110,110 L 110,35" fill="none" stroke="#1b365d" stroke-width="2"/>
+            <path d="M 30,110 A 40 12 0 0 1 110,110" fill="none" stroke="#1b365d" stroke-width="1.5" stroke-dasharray="3,3"/>
+            
+            <!-- Raio: Somente se o campo Outra Medida/Ângulo for preenchido -->
+            ${valExtra !== "" ? `
+              <line x1="70" y1="35" x2="110" y2="35" stroke="#2b6cb0" stroke-width="1.5"/>
+              <circle cx="70" cy="35" r="2.5" fill="#1b365d"/>
+              <text x="90" y="27" font-size="11" fill="#2b6cb0" text-anchor="middle" font-weight="bold">${valExtra}</text>
+            ` : ''}
+            
+            <!-- Altura: Somente se o campo Altura for preenchido -->
+            ${valAltura !== "" ? `
+              <line x1="110" y1="35" x2="110" y2="110" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <text x="122" y="75" font-size="11" fill="#c53030" text-anchor="start" font-weight="bold">${valAltura}</text>
+            ` : ''}
+
+            <!-- Base: Somente se o campo Base for preenchido -->
+            ${valBase !== "" ? `
+              <text x="70" y="132" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${valBase}</text>
+            ` : ''}
+          </svg>
+        </div>`;
+        
+    default:
+      return "";
+  }
+}
+
+
+    function inserirFiguraNoEnunciado() {
+      const tipo = document.getElementById("figuraTipo").value;
+      const base = document.getElementById("figuraBase").value;
+      const altura = document.getElementById("figuraAltura").value;
+      const extra = document.getElementById("figuraExtra").value;
+
+      if (!tipo) {
+        alert("Selecione um tipo de figura!");
+        return;
+      }
+
+      const svgCodigo = geradorSVGFigura(tipo, base, altura, extra);
+      const textareaEnunciado = document.getElementById("enunciado");
+      
+      textareaEnunciado.value += `\n${svgCodigo}\n`;
+
+      if (typeof atualizarPreviewLatex === 'function') {
+        atualizarPreviewLatex();
+      }
+
+      document.getElementById("figuraTipo").value = "";
+      document.getElementById("figuraBase").value = "";
+      document.getElementById("figuraAltura").value = "";
+      document.getElementById("figuraExtra").value = "";
+    }
   </script>
 </body>
 </html>
