@@ -1804,8 +1804,18 @@
         inputAltura.placeholder = "Não aplicável";
         inputExtra.placeholder = "Não aplicável";
       } else if (tipo === "quadrado") {
+        // Quadrado: não utiliza marcação de ângulo.
+        if (campoAngulo) campoAngulo.style.display = "none";
+        if (inputAngulo) inputAngulo.value = "";
         inputBase.placeholder = "Lado (ex: 6 cm)";
         inputAltura.placeholder = "Não aplicável";
+        inputExtra.placeholder = "Não aplicável";
+      } else if (tipo === "retangulo") {
+        // Retângulo: não utiliza marcação de ângulo.
+        if (campoAngulo) campoAngulo.style.display = "none";
+        if (inputAngulo) inputAngulo.value = "";
+        inputBase.placeholder = "Base (ex: 10 cm)";
+        inputAltura.placeholder = "Altura (ex: 5 cm)";
         inputExtra.placeholder = "Não aplicável";
       } else if (tipo === "cubo") {
         if (campoAngulo) campoAngulo.style.display = "none";
@@ -1902,7 +1912,6 @@
       return `<div style="text-align:center; margin: 10px 0;">
         <svg width="120" height="120" viewBox="0 0 120 120" style="background:#fff; border-radius:4px;">
           <rect x="25" y="20" width="70" height="70" fill="none" stroke="#1b365d" stroke-width="2"/>
-          ${svgMarcaAngulo(25,20,135,20,25,80,ang,16)}
           ${b ? `<text x="60" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
         </svg>
       </div>`;
@@ -1911,7 +1920,6 @@
       return `<div style="text-align:center; margin: 10px 0;">
         <svg width="160" height="100" viewBox="0 0 160 100" style="background:#fff; border-radius:4px;">
           <rect x="25" y="20" width="110" height="60" fill="none" stroke="#1b365d" stroke-width="2"/>
-          ${svgMarcaAngulo(25,90,135,90,25,20,ang,16)}
           ${b ? `<text x="80" y="94" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
           ${h ? `<text x="15" y="54" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${h}</text>` : ''}
         </svg>
@@ -1921,7 +1929,7 @@
       return `<div style="text-align:center; margin: 10px 0;">
         <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
           <polygon points="25,90 135,90 25,20" fill="none" stroke="#1b365d" stroke-width="2"/>
-          ${ang ? `<path d="M 25,68 A 22,22 0 0 1 47,90" fill="none" stroke="#2b6cb0" stroke-width="1.5"/><text x="51" y="75" font-size="10" fill="#2b6cb0" font-weight="bold">${ang}</text>` : ''}
+          ${svgMarcaAngulo(25,20,25,90,135,90,ang,22)}
           <rect x="25" y="80" width="10" height="10" fill="none" stroke="#1b365d" stroke-width="1"/>
           <circle cx="30" cy="85" r="1.5" fill="#1b365d"/>
           ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
@@ -1968,7 +1976,7 @@
       return `<div style="text-align:center; margin: 10px 0;">
         <svg width="160" height="110" viewBox="0 0 160 110" style="background:#fff; border-radius:4px;">
           <polygon points="25,90 135,90 95,25 25,25" fill="none" stroke="#1b365d" stroke-width="2"/>
-          ${svgMarcaAngulo(25,90,135,90,45,25,ang,16)}
+         ${svgMarcaAngulo(105,25,55,25,120,90,ang,28)}
           ${b ? `<text x="80" y="105" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${b}</text>` : ''}
           ${e ? `<text x="60" y="18" font-size="11" fill="#1b365d" text-anchor="middle" font-weight="bold">${e}</text>` : ''}
           ${h ? `<text x="14" y="60" font-size="11" fill="#c53030" text-anchor="middle" font-weight="bold">${h}</text>` : ''}
