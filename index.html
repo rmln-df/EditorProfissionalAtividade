@@ -233,6 +233,31 @@
       break-inside: avoid !important;
     }
 
+    /* PAINEL DE FIGURA GEOMÉTRICA — CONTROLES ORGANIZADOS VERTICALMENTE */
+    .painel-figura-geometrica .figura-medidas-verticais {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .painel-figura-geometrica #campoFiguraBase,
+    .painel-figura-geometrica #campoFiguraAltura,
+    .painel-figura-geometrica #campoFiguraExtra,
+    .painel-figura-geometrica #campoFiguraAngulos {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .painel-figura-geometrica #listaAngulosFigura {
+      width: 100%;
+    }
+    .painel-figura-geometrica .linha-angulo-figura input,
+    .painel-figura-geometrica .linha-angulo-figura select {
+      min-width: 0;
+    }
+    .painel-figura-geometrica #btnAdicionarAnguloFigura,
+    .painel-figura-geometrica > .btn:last-child {
+      width: 100% !important;
+      box-sizing: border-box;
+    }
+
     @media(max-width: 768px) {
       .card, #menuPrincipal { width: 95%; margin: 10px auto; border-radius: 10px; }
       .card-conteudo { padding: 12px; }
@@ -482,82 +507,84 @@
              </div>
             </div>
               <!-- ÁREA DE FIGURAS GEOMÉTRICAS PARAMETRIZADAS -->
-            <div style="border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #f0f4f8;">
-              <strong style="color: #1b365d; display: block; margin-bottom: 6px;">📐 Inserir Figura Geométrica com Medidas:</strong>
-              
-              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                <select id="figuraTipo" onchange="atualizarCamposFigura()" style="flex: 2; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-                  <option value="">Selecione a figura...</option>
-                  <optgroup label="📐 Figuras Planas">
-                    <option value="quadrado">Quadrado</option>
-                    <option value="retangulo">Retângulo</option>
-                    <option value="triangulo_retangulo">Triângulo Retângulo</option>
-                    <option value="triangulo_equilatero">Triângulo Equilátero</option>
-                    <option value="triangulo_isosceles">Triângulo Isósceles</option>
-                    <option value="triangulo_escaleno">Triângulo Escaleno</option>
-                    <option value="trapezio_retangulo">Trapézio Retângulo</option>
-                    <option value="trapezio_isosceles">Trapézio Isósceles</option>
-                    <option value="paralelogramo">Paralelogramo</option>
-                    <option value="losango">Losango</option>
-                    <option value="circulo">Círculo / Circunferência</option>
-                  </optgroup>
-                  <optgroup label="🧊 Sólidos Geométricos">
-                    <option value="cubo">Cubo</option>
-                    <option value="paralelepipedo">Paralelepípedo Retângulo</option>
-                    <option value="prisma_triangular">Prisma Triangular</option>
-                    <option value="prisma_quadrangular">Prisma Quadrangular</option>
-                    <option value="prisma_hexagonal">Prisma Hexagonal</option>
-                    <option value="piramide_quadrada">Pirâmide de Base Quadrada</option>
-                    <option value="piramide_triangular">Pirâmide de Base Triangular</option>
-                    <option value="piramide_hexagonal">Pirâmide de Base Hexagonal</option>
-                    <option value="cilindro">Cilindro</option>
-                    <option value="cone">Cone</option>
-                    <option value="esfera">Esfera</option>
-                  </optgroup>
-                </select>
+            <div class="painel-figura-geometrica" style="border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #f0f4f8;">
+              <strong style="color: #1b365d; display: block; margin-bottom: 8px;">📐 Inserir Figura Geométrica com Medidas:</strong>
 
-                <div id="campoFiguraBase" style="flex: 1;">
-                  <input type="text" id="figuraBase" placeholder="Base (ex: 10 cm)" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
+              <!-- Figura: largura total do painel -->
+              <select id="figuraTipo" onchange="atualizarCamposFigura()" style="display:block; width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:8px;">
+                <option value="">Selecione a figura...</option>
+                <optgroup label="📐 Figuras Planas">
+                  <option value="quadrado">Quadrado</option>
+                  <option value="retangulo">Retângulo</option>
+                  <option value="triangulo_retangulo">Triângulo Retângulo</option>
+                  <option value="triangulo_equilatero">Triângulo Equilátero</option>
+                  <option value="triangulo_isosceles">Triângulo Isósceles</option>
+                  <option value="triangulo_escaleno">Triângulo Escaleno</option>
+                  <option value="trapezio_retangulo">Trapézio Retângulo</option>
+                  <option value="trapezio_isosceles">Trapézio Isósceles</option>
+                  <option value="paralelogramo">Paralelogramo</option>
+                  <option value="losango">Losango</option>
+                  <option value="circulo">Círculo / Circunferência</option>
+                </optgroup>
+                <optgroup label="🧊 Sólidos Geométricos">
+                  <option value="cubo">Cubo</option>
+                  <option value="paralelepipedo">Paralelepípedo Retângulo</option>
+                  <option value="prisma_triangular">Prisma Triangular</option>
+                  <option value="prisma_quadrangular">Prisma Quadrangular</option>
+                  <option value="prisma_hexagonal">Prisma Hexagonal</option>
+                  <option value="piramide_quadrada">Pirâmide de Base Quadrada</option>
+                  <option value="piramide_triangular">Pirâmide de Base Triangular</option>
+                  <option value="piramide_hexagonal">Pirâmide de Base Hexagonal</option>
+                  <option value="cilindro">Cilindro</option>
+                  <option value="cone">Cone</option>
+                  <option value="esfera">Esfera</option>
+                </optgroup>
+              </select>
+
+              <!-- Os três campos de medidas ficam um abaixo do outro -->
+              <div class="figura-medidas-verticais">
+                <div id="campoFiguraBase">
+                  <input type="text" id="figuraBase" placeholder="Base (ex: 10 cm)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:8px;">
+                </div>
+                <div id="campoFiguraAltura">
+                  <input type="text" id="figuraAltura" placeholder="Altura (ex: 5 cm)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:8px;">
+                </div>
+                <div id="campoFiguraExtra">
+                  <input type="text" id="figuraExtra" placeholder="Outra medida / Ângulo" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:8px;">
                 </div>
               </div>
 
-              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                <div id="campoFiguraAltura" style="flex:1;">
-                  <input type="text" id="figuraAltura" placeholder="Altura (ex: 5 cm)" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                </div>
-                <div id="campoFiguraExtra" style="flex:1;">
-                  <input type="text" id="figuraExtra" placeholder="Outra medida / Ângulo" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                </div>
-                <div id="campoFiguraAngulos" style="flex: 2; min-width: 0;">
-                  <div id="listaAngulosFigura">
-                    <div class="linha-angulo-figura" style="display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr) auto; gap:6px; margin-bottom:6px;">
-                      <input type="text" class="figura-angulo" placeholder="Ângulo (80 ou x)" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                      <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                        <option value="0">Vértice A</option>
-                      </select>
-                      <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="display:block; border:none; border-radius:4px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>
-                    </div>
-                    <div class="linha-angulo-figura" style="display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr) auto; gap:6px; margin-bottom:6px;">
-                      <input type="text" class="figura-angulo" placeholder="Ângulo (30 ou y)" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                      <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                        <option value="0">Vértice A</option>
-                      </select>
-                      <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="display:block; border:none; border-radius:4px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>
-                    </div>
-                    <div class="linha-angulo-figura" style="display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr) auto; gap:6px; margin-bottom:6px;">
-                      <input type="text" class="figura-angulo" placeholder="Ângulo (20 ou z)" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                      <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-                        <option value="0">Vértice A</option>
-                      </select>
-                      <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="display:block; border:none; border-radius:4px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>
-                    </div>
+              <!-- Ângulos: cada linha mantém Ângulo + Vértice, e novas linhas são adicionadas abaixo -->
+              <div id="campoFiguraAngulos" style="display:none; width:100%; box-sizing:border-box;">
+                <div id="listaAngulosFigura">
+                  <div class="linha-angulo-figura" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:6px; margin-bottom:8px;">
+                    <input type="text" class="figura-angulo" placeholder="Ângulo (80 ou x)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                      <option value="0">Vértice A</option>
+                    </select>
+                    <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="display:block; min-width:42px; border:none; border-radius:6px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>
                   </div>
-                  <button type="button" id="btnAdicionarAnguloFigura" class="btn" style="background:#276749; color:white; padding:6px 10px; font-size:12px; width:auto;" onclick="adicionarLinhaAnguloFigura()">➕ Adicionar outro ângulo</button>
-                  <div style="font-size:11px; color:#4a5568; margin-top:5px; line-height:1.3;">Preencha os ângulos e escolha os vértices. Todos ficarão no mesmo polígono.</div>
+                  <div class="linha-angulo-figura" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:6px; margin-bottom:8px;">
+                    <input type="text" class="figura-angulo" placeholder="Ângulo (30 ou y)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                      <option value="0">Vértice A</option>
+                    </select>
+                    <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="display:block; min-width:42px; border:none; border-radius:6px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>
+                  </div>
+                  <div class="linha-angulo-figura" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:6px; margin-bottom:8px;">
+                    <input type="text" class="figura-angulo" placeholder="Ângulo (20 ou z)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                      <option value="0">Vértice A</option>
+                    </select>
+                    <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="display:block; min-width:42px; border:none; border-radius:6px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>
+                  </div>
                 </div>
+
+                <button type="button" id="btnAdicionarAnguloFigura" class="btn" style="display:block; background:#276749; color:white; padding:10px; font-size:14px; width:100%; box-sizing:border-box; border-radius:6px; margin-top:2px;" onclick="adicionarLinhaAnguloFigura()">➕ Adicionar outro ângulo</button>
+                <div style="font-size:11px; color:#4a5568; margin-top:6px; margin-bottom:8px; line-height:1.3;">Preencha os ângulos e escolha os vértices. Todos ficarão no mesmo polígono.</div>
               </div>
 
-              <button type="button" class="btn" style="background:#2b6cb0; color:white; width:100%; padding:8px;" onclick="inserirFiguraNoEnunciado()">
+              <button type="button" class="btn" style="display:block; background:#2b6cb0; color:white; width:100%; box-sizing:border-box; padding:10px; border-radius:6px;" onclick="inserirFiguraNoEnunciado()">
                 ➕ Inserir Desenho com Medidas no Enunciado
               </button>
             </div>
@@ -1906,11 +1933,11 @@
       const ultima = linhas[linhas.length - 1];
       const nova = document.createElement("div");
       nova.className = "linha-angulo-figura";
-      nova.style.cssText = "display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr) auto; gap:6px; margin-bottom:6px;";
+      nova.style.cssText = "display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:6px; margin-bottom:8px;";
       nova.innerHTML = `
-        <input type="text" class="figura-angulo" placeholder="Ângulo (80 ou x)" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;">
-        <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; border:1px solid #ccc;"></select>
-        <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="border:none; border-radius:4px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>`;
+        <input type="text" class="figura-angulo" placeholder="Ângulo (80 ou x)" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;">
+        <select class="figura-vertice" style="width:100%; box-sizing:border-box; padding:10px; border-radius:6px; border:1px solid #ccc;"></select>
+        <button type="button" class="btn-remover-angulo" title="Remover este ângulo" style="min-width:42px; border:none; border-radius:6px; padding:0 10px; background:#c53030; color:#fff; cursor:pointer;">×</button>`;
 
       nova.querySelector(".btn-remover-angulo").addEventListener("click", () => {
         nova.remove();
