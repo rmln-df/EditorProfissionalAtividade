@@ -1085,7 +1085,7 @@
                 <small style="color:#333;">${q.enunciado ? q.enunciado.substring(0, 50) : ''}...</small>
               </div>
               <div>
-                <button class="btn-gabarito-item" onclick="alternarGabaritoLista(${q.id})">👁️ Gabarito</button>
+                ${q.gabarito && String(q.gabarito).trim() ? `<button class="btn-gabarito-item" onclick="alternarGabaritoLista(${q.id})">👁️ Gabarito</button>` : ''}
                 <button class="btn-edit" onclick="editarQuestao(${q.id})">✏️ Editar</button>
                 <button class="btn-delete" onclick="excluirQuestao(${q.id})">🗑 Excluir</button>
               </div>
