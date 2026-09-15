@@ -309,6 +309,8 @@
               <button class="btn" onclick="selecionarTodasQuestoes()" style="background:#ffee00; color:#1b365d; flex:1;">☑️Selecionar Todas</button>
               <button class="btn" onclick="desmarcarTodasQuestoes()" style="background:#718096; color:white; flex:1;">🔲Desmarcar Todas</button>
               <button class="btn" onclick="importarSelecionadas()" style="background:#38a169; color:white; flex:1;">➕ Importar Selecionadas</button>
+              <button class="btn" onclick="editarSelecionadaBanco()" style="background:#006400; color:white; flex:1;">✏️ Editar Selecionada</button>
+              <button class="btn" onclick="cancelarSelecaoBanco()" style="background:#718096; color:white; flex:1;">❌ Cancelar Seleção</button>
               <button class="btn" onclick="excluirSelecionadas()" style="background:#c53030; color:white; flex:1;">🗑️ Excluir Selecionadas</button>
             </div>
             <div style="display:flex; gap:8px;">
@@ -730,6 +732,7 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
     let paginaAtual = 0;
     let questoesArray = [];
     let questaoEmEdicaoId = null;
+    let questaoBancoEmEdicaoId = null;
     let provaAtualId = null;
 
     /* FUNÇÃO DE PARSER PARA LATEX (KATEX) */
@@ -858,7 +861,7 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
     }
 
     function voltarMenu() {
-      if (questaoEmEdicaoId !== null) {
+      if (questaoEmEdicaoId !== null || questaoBancoEmEdicaoId !== null) {
         cancelarEdicao();
       }
       document.getElementById("editor").style.display = "none";
@@ -1106,6 +1109,20 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
         altA, altB, altC, altD, altE, corretaMultipla, respostaCE, respostaVF, subquestoes, subquestoesEspacos
       };
 
+      // Edição iniciada diretamente pelo Banco de Questões:
+      // atualiza somente o registro salvo no banco, sem inserir/alterar a prova atual.
+      if (questaoBancoEmEdicaoId !== null) {
+        dadosQuestao.id = questaoBancoEmEdicaoId;
+        salvarQuestaoNoBanco(dadosQuestao);
+        questaoBancoEmEdicaoId = null;
+        questaoEmEdicaoId = null;
+        limparFormulario();
+        renderizarBancoQuestoes();
+        renderizarListaEditor();
+        alert("✅ Questão do Banco de Questões atualizada com sucesso!");
+        return;
+      }
+
       if (questaoEmEdicaoId !== null) {
         let index = questoesArray.findIndex(q => q.id === questaoEmEdicaoId);
         if (index !== -1) questoesArray[index] = dadosQuestao;
@@ -1161,6 +1178,7 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
     }
     function cancelarEdicao() {
       questaoEmEdicaoId = null;
+      questaoBancoEmEdicaoId = null;
       limparFormulario();
       document.getElementById("container-btn-salvar").innerHTML = `
         <button class="btn" id="btnSalvarQuestao" style="background:#1b365d; color:white; width:100%; padding: 12px; font-size: 11pt;" onclick="adicionarOuSalvarQuestao()">
@@ -1371,6 +1389,92 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
         banco.push(questao);
       }
       localStorage.setItem("bancoQuestoes", JSON.stringify(banco));
+    }
+
+    /* EDIÇÃO DIRETA DO BANCO DE QUESTÕES */
+    function editarSelecionadaBanco() {
+      const selecionadas = document.querySelectorAll(".checkQuestao:checked");
+
+      if (selecionadas.length === 0) {
+        alert("Selecione uma questão para editar.");
+        return;
+      }
+
+      if (selecionadas.length > 1) {
+        alert("Para editar, selecione apenas uma questão por vez.");
+        return;
+      }
+
+      editarQuestaoBanco(Number(selecionadas[0].value));
+    }
+
+    function cancelarSelecaoBanco() {
+      document.querySelectorAll(".checkQuestao").forEach(check => {
+        check.checked = false;
+        const item = check.closest('.item-salvo');
+        if (item) item.classList.remove("selecionado");
+      });
+    }
+
+    function editarQuestaoBanco(id) {
+      const banco = JSON.parse(localStorage.getItem("bancoQuestoes") || "[]");
+      const q = banco.find(item => Number(item.id) === Number(id));
+      if (!q) {
+        alert("Questão não encontrada no Banco de Questões.");
+        return;
+      }
+
+      questaoBancoEmEdicaoId = Number(id);
+      questaoEmEdicaoId = null;
+
+      document.getElementById("titulo").value = q.titulo || "";
+      document.getElementById("enunciado").value = q.enunciado || "";
+      document.getElementById("subquestoes").value = Array.isArray(q.subquestoes) ? q.subquestoes.join("\n") : "";
+      atualizarEspacosSubquestoesUI(Array.isArray(q.subquestoesEspacos) ? q.subquestoesEspacos : []);
+      document.getElementById("tipo").value = q.tipo || "dissertativa";
+      document.getElementById("gabarito").value = q.gabarito || "";
+      document.getElementById("espaco").value = q.espaco || "0";
+      document.getElementById("calculo").checked = !!q.calculo;
+      document.getElementById("altA").value = q.altA || "";
+      document.getElementById("altB").value = q.altB || "";
+      document.getElementById("altC").value = q.altC || "";
+      document.getElementById("altD").value = q.altD || "";
+      document.getElementById("altE").value = q.altE || "";
+      document.getElementById("corretaMultipla").value = q.corretaMultipla || "";
+      document.getElementById("respostaCE").value = q.respostaCE || "";
+      document.getElementById("respostaVF").value = q.respostaVF || "";
+
+      alternarCamposTipo();
+      atualizarPreviewLatex();
+      atualizarPreviewGabarito();
+
+      document.getElementById("bancoQuestoes").style.display = "none";
+      document.getElementById("editor").style.display = "block";
+
+      const card = document.getElementById("novaQuestao");
+      if (card.style.display === "none") {
+        alternarCard('novaQuestao','tituloQuestao','➕ Nova Questão / Edição');
+      }
+
+      document.getElementById("container-btn-salvar").innerHTML = `
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn" style="background:#2b6cb0; color:white; flex:1; min-width:180px; padding:12px;" onclick="adicionarOuSalvarQuestao()">💾 Salvar Alterações no Banco</button>
+          <button class="btn" style="background:#718096; color:white; flex:1; min-width:180px; padding:12px;" onclick="cancelarEdicaoBanco()">❌ Cancelar Edição</button>
+        </div>
+      `;
+
+      document.getElementById("novaQuestao").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelarEdicaoBanco() {
+      questaoBancoEmEdicaoId = null;
+      questaoEmEdicaoId = null;
+      limparFormulario();
+      document.getElementById("container-btn-salvar").innerHTML = `
+        <button class="btn" id="btnSalvarQuestao" style="background:#1b365d; color:white; width:100%; padding: 12px; font-size: 11pt;" onclick="adicionarOuSalvarQuestao()">
+          ➕ Adicionar Questão
+        </button>
+      `;
     }
 
     /* RENDERIZAÇÃO DO BANCO */
