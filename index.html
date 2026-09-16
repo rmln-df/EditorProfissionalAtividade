@@ -162,7 +162,20 @@
     #telaInicial h1 { font-size: clamp(40px,7vw,50px); margin-bottom: 10px; text-align: center; }
     #telaInicial h2 { font-size: clamp(20px,4vw,22px); font-weight: normal; margin-bottom: 25px; text-align: center; }
     #telaInicial button { width: 85%; max-width: 320px; padding: 16px; font-size: clamp(18px,4vw,22px); border: none; border-radius: 12px; cursor: pointer; background: orange; color: #1b365d; font-weight: bold; }
-    #menuPrincipal { width: 210mm; max-width: 95%; margin: 30px auto; background: orange; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,.15); }
+    #menuPrincipal {
+      width: min(1400px, calc(100% - 24px));
+      max-width: none;
+      min-height: 72vh;
+      margin: 24px auto;
+      box-sizing: border-box;
+      background: orange;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
     #menuPrincipal h2 { text-align: center; color: #1b365d; margin-bottom: 10px; }
     #menuPrincipal p { text-align: center; margin-bottom: 25px; color: #666; }
     #menuPrincipal button { width: 100%; padding: 15px; margin-bottom: 12px; font-size: 18px; border: none; border-radius: 10px; background: #1b365d; color: orange; cursor: pointer; transition: .3s; }
@@ -268,8 +281,42 @@
       box-sizing: border-box;
     }
 
+    /* TELAS PRINCIPAIS EXPANSIVAS — somente Menu e Banco de Questões */
+    #bancoQuestoes {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 0 20px;
+    }
+    #bancoQuestoes > .card {
+      width: min(1400px, calc(100% - 24px));
+      max-width: none;
+      min-height: 78vh;
+      margin: 24px auto;
+      box-sizing: border-box;
+    }
+    #bancoQuestoes > .card > .card-conteudo {
+      min-height: calc(78vh - 70px);
+      box-sizing: border-box;
+    }
+
     @media(max-width: 768px) {
-      .card, #menuPrincipal { width: 95%; margin: 10px auto; border-radius: 10px; }
+      #menuPrincipal {
+        width: calc(100% - 16px);
+        min-height: 76vh;
+        margin: 12px auto;
+        padding: 20px 16px;
+        border-radius: 12px;
+      }
+      #bancoQuestoes > .card {
+        width: calc(100% - 16px);
+        min-height: 80vh;
+        margin: 12px auto;
+        border-radius: 12px;
+      }
+      #bancoQuestoes > .card > .card-conteudo {
+        min-height: calc(80vh - 65px);
+        padding: 12px;
+      }
       .card-conteudo { padding: 12px; }
       .editor { padding: 10px; }
       .item-salvo { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -307,7 +354,7 @@
           <div class="sticky-banco-header">
             <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
               <button class="btn" onclick="selecionarTodasQuestoes()" style="background:#ffee00; color:#1b365d; flex:1;">☑️Selecionar Todas</button>
-              <button class="btn" onclick="desmarcarTodasQuestoes()" style="background:#7aa3d9; color:white; flex:1;">🔲Desmarcar Todas</button>
+              <button class="btn" onclick="desmarcarTodasQuestoes()" style="background:#718096; color:white; flex:1;">🔲Desmarcar Todas</button>
               <button class="btn" onclick="importarSelecionadas()" style="background:#38a169; color:white; flex:1;">➕ Importar Selecionadas</button>
               <button class="btn" onclick="editarSelecionadaBanco()" style="background:#006400; color:white; flex:1;">✏️ Editar Selecionada</button>
               <button class="btn" onclick="cancelarSelecaoBanco()" style="background:#718096; color:white; flex:1;">❌ Cancelar Seleção</button>
