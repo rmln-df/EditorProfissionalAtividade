@@ -201,6 +201,33 @@
       padding-right: 5px;
     }
 
+    /* CABEÇALHO FIXO DA TELA DE PROVAS SALVAS */
+    #provasSalvas .card {
+      overflow: visible;
+    }
+    .provas-salvas-header-fixo {
+      position: sticky;
+      top: 0;
+      z-index: 5000;
+      background: orange;
+      padding: 0 20px 12px 20px;
+    }
+    .provas-salvas-header-fixo .card-titulo {
+      border-radius: 14px 14px 0 0;
+    }
+    .provas-salvas-header-fixo .btn-voltar-provas {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 0;
+      background: #1b365d;
+      color: white;
+      border: none;
+      border-radius: 0 0 8px 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     .item-salvo { 
       border-left: 6px solid #2b6cb0;
       border-top: 1px solid #dbeafe;
@@ -381,12 +408,9 @@
     <!-- PROVAS SALVAS -->
     <div id="provasSalvas" style="display:none;">
       <div class="card">
-        <div class="card-titulo">💾 Provas Salvas no Dispositivo</div>
-        <div style="padding: 12px 20px 0 20px;">
-  <button onclick="voltarMenu()" class="btn"
-    style="background:#1b365d; color:white; width:100%; padding:12px; margin:0;">
-    ⬅ Voltar ao Menu
-  </button>
+        <div class="provas-salvas-header-fixo">
+          <div class="card-titulo">💾 Provas Salvas no Dispositivo</div>
+          <button onclick="voltarMenu()" class="btn-voltar-provas">⬅ Voltar ao Menu</button>
         </div>
         <div class="card-conteudo">
           <div id="listaProvasSalvas"></div>
