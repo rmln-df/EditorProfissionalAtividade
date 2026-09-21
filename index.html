@@ -315,8 +315,11 @@
       padding: 0 0 20px;
     }
     #bancoQuestoes > .card {
-      width: min(1400px, calc(100% - 24px));
-      max-width: none;
+      /* No tablet/desktop, o Banco ocupa praticamente toda a largura disponível,
+         mantendo apenas uma pequena margem lateral. */
+      width: calc(100% - 32px) !important;
+      max-width: none !important;
+      min-width: 0 !important;
       min-height: 78vh;
       margin: 24px auto;
       box-sizing: border-box;
@@ -324,6 +327,20 @@
     #bancoQuestoes > .card > .card-conteudo {
       min-height: calc(78vh - 70px);
       box-sizing: border-box;
+    }
+
+    @media(min-width: 769px) {
+      /* Tablet e telas maiores: Banco de Questões realmente expansivo. */
+      #bancoQuestoes {
+        width: 100% !important;
+        max-width: none !important;
+      }
+      #bancoQuestoes > .card {
+        width: calc(100% - 32px) !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
     }
 
     @media(max-width: 768px) {
