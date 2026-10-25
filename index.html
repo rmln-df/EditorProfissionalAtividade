@@ -303,7 +303,7 @@
       background: linear-gradient(135deg,#dbeafe,#bfdbfe);
       border-left: 6px solid #2563eb;
       box-shadow: 0 6px 15px rgba(37,99,235,.25);
-    }
+    } 
     
     /* Modo PDF */
     #documento-paginado.modo-pdf {
@@ -1458,8 +1458,29 @@ Proporção de ocorrências"></textarea>
         box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
       }
     }
+     
+         function moverQuestao(id, direcao) {
+      const index = questoesArray.findIndex(q => q.id === id);
+      if (index === -1) return;
 
-    function renderizarListaEditor() {
+      const novoIndex = index + direcao;
+
+      // Verifica se o novo índice está dentro dos limites do array
+      if (novoIndex < 0 || novoIndex >= questoesArray.length) return;
+
+      // Troca a posição das questões no array
+      const temp = questoesArray[index];
+      questoesArray[index] = questoesArray[novoIndex];
+      questoesArray[novoIndex] = temp;
+
+      // Atualiza a lista na tela e reflete na paginação automaticamente
+      renderizarListaEditor();
+      if (typeof paginarDocumento === "function") {
+        paginarDocumento();
+      }
+    }
+
+        function renderizarListaEditor() {
       let lista = document.getElementById("listaQuestoes");
       if (questoesArray.length === 0) {
         lista.innerHTML = '<p style="color:#777;text-align:center;">Nenhuma questão adicionada.</p>';
@@ -1473,6 +1494,10 @@ Proporção de ocorrências"></textarea>
 
         let textoGabarito = q.gabarito ? formatarTextoLatex(q.gabarito) : "<em style='color:#888;'>Gabarito não informado.</em>";
 
+        // Desabilita a seta "Subir" na primeira questão e "Descer" na última
+        let btnSubirDisabled = idx === 0 ? "opacity: 0.4; cursor: not-allowed;" : "";
+        let btnDescerDisabled = idx === questoesArray.length - 1 ? "opacity: 0.4; cursor: not-allowed;" : "";
+
         item.innerHTML = `
           <div style="width: 100%;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
@@ -1480,7 +1505,9 @@ Proporção de ocorrências"></textarea>
                 <strong style="color:#1b365d;">Questão ${idx + 1}</strong> <small style="color:#666;">(${q.tipo})</small><br>
                 <small style="color:#333;">${q.enunciado ? q.enunciado.substring(0, 50) : ''}...</small>
               </div>
-              <div>
+              <div style="display:flex; gap:4px; flex-wrap:wrap; align-items:center;">
+                <button class="btn" style="background:#2b6cb0; color:white; padding:5px 8px; font-size:8pt; ${btnSubirDisabled}" onclick="moverQuestao(${q.id}, -1)" title="Subir questão">⬆</button>
+                <button class="btn" style="background:#2b6cb0; color:white; padding:5px 8px; font-size:8pt; ${btnDescerDisabled}" onclick="moverQuestao(${q.id}, 1)" title="Descer questão">⬇</button>
                 ${q.gabarito && String(q.gabarito).trim() ? `<button class="btn-gabarito-item" onclick="alternarGabaritoLista(${q.id})">👁️ Gabarito</button>` : ''}
                 <button class="btn-edit" onclick="editarQuestao(${q.id})">✏️ Editar</button>
                 <button class="btn-delete" onclick="excluirQuestao(${q.id})">🗑 Excluir</button>
