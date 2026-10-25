@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -144,7 +143,63 @@
     .questao-titulo { font-weight: bold; color: #1b365d; margin-bottom: 4px; border-left: 3px solid #2b6cb0; padding-left: 5px; break-after: avoid; }
     .alternativas-lista { margin-top: 4px; margin-bottom: 6px; padding-left: 2px; }
     .alternativa-item { margin-bottom: 2px; text-align: left; }
-
+    .associar-editor-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:10px; }
+    .associar-editor-coluna { min-width:0; background:#fff; border:1px solid #cbd5e0; border-radius:7px; padding:9px; }
+    .associar-editor-coluna strong { display:block; color:#1b365d; margin-bottom:6px; }
+    .associar-editor-coluna textarea { min-height:145px; margin-bottom:0; }
+    .associar-documento {
+      display: grid;
+      /* Mantém as duas colunas lado a lado mesmo quando a questão ocupa meia página. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 10px;
+      width: 100%;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    /* Só empilha em telas realmente estreitas; na folha A4, prioriza lado a lado. */
+    @media screen and (max-width: 340px) {
+      .associar-documento { grid-template-columns: minmax(0, 1fr); }
+    }
+        .associar-documento-coluna { min-width: 0; overflow-wrap: anywhere; padding: 0; }
+        .associar-documento {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 12px;
+      width: 100%;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    @media screen and (max-width: 340px) {
+      .associar-documento { grid-template-columns: minmax(0, 1fr); }
+    }
+    .associar-documento-coluna { 
+      min-width: 0; 
+      overflow-wrap: anywhere; 
+      padding: 0; 
+    }
+    .associar-documento-item { 
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 6px 0; 
+      text-align: left; 
+      overflow-wrap: anywhere; 
+      line-height: 1.35;
+    }
+    .associar-documento-marcador { 
+      font-weight: bold; 
+      flex-shrink: 0;
+    }
+    .associar-resposta-vazia { 
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .associar-texto-item {
+      flex: 1;
+      min-width: 0;
+    }
     .editor { background: #fff8e1; padding: 15px; border-radius: 8px; width: 100%; margin-bottom: 15px; }
     .editor label { display: block; font-weight: bold; color: #1b365d; margin-top: 10px; margin-bottom: 4px; font-size: 9.5pt; }
     .editor input, .editor textarea, .editor select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 9.5pt; background-color: #f8fafc; transition: border-color 0.2s, background-color 0.2s; }
@@ -527,6 +582,7 @@
               <option value="multipla">Múltipla Escolha</option>
               <option value="ce">Certo ou Errado</option>
               <option value="vf">Verdadeiro ou Falso</option>
+              <option value="relacionar">Relacionar as Colunas</option>
             </select>
 
             <label for="enunciado">Enunciado</label>
@@ -738,6 +794,37 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
                 <option value="VERDADEIRO">VERDADEIRO</option>
                 <option value="FALSO">FALSO</option>
               </select>
+            </div>
+
+            <div id="secaoRelacionar" style="display:none; border:1px solid #2b6cb0; padding:12px; border-radius:6px; margin-bottom:12px; background:#edf2f7;">
+              <strong style="color:#1b365d; display:block; margin-bottom:8px;">🔗 Monte as duas colunas</strong>
+              <small style="display:block; color:#4a5568; margin-bottom:10px;">Digite um item por linha. Na primeira coluna, escolha números (1, 2, 3...) ou algarismos romanos (I, II, III...). Na segunda coluna, cada item aparecerá com parênteses vazios para o aluno preencher.</small>
+              
+              
+                            <label for="estiloNumeracaoColunaA">Identificação da primeira coluna</label>
+              <select id="estiloNumeracaoColunaA" style="margin-bottom:10px;">
+                <option value="ordinal">Números: 1, 2, 3...</option>
+                <option value="romano">Romanos: I, II, III...</option>
+                <option value="letra">Letras: a, b, c...</option>
+              </select>
+              <div class="associar-editor-grid">
+                <div class="associar-editor-coluna">
+                  <strong>Primeira coluna — Definições / itens numerados</strong>
+                  <textarea id="colunaA" placeholder="Ex.:
+Espaço amostral
+Evento
+Frequência relativa"></textarea>
+                </div>
+                <div class="associar-editor-coluna">
+                  <strong>Segunda coluna — Itens para relacionar</strong>
+                  <textarea id="colunaB" placeholder="Ex.:
+Conjunto de resultados possíveis
+Conjunto de resultados observados
+Proporção de ocorrências"></textarea>
+                </div>
+              </div>
+              <label for="gabaritoAssociar">Gabarito das associações (opcional)</label>
+              <input type="text" id="gabaritoAssociar" placeholder="Ex.: 1-c, 2-a, 3-b ou I-c, II-a, III-b" style="margin-bottom:0;">
             </div>
 
             <div id="secaoGabaritoTexto">
@@ -1054,6 +1141,7 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       document.getElementById("secaoMultiplaEscolha").style.display = tipo === "multipla" ? "block" : "none";
       document.getElementById("secaoCertoErrado").style.display = tipo === "ce" ? "block" : "none";
       document.getElementById("secaoVerdadeiroFalso").style.display = tipo === "vf" ? "block" : "none";
+      document.getElementById("secaoRelacionar").style.display = tipo === "relacionar" ? "block" : "none";
       document.getElementById("secaoGabaritoTexto").style.display = tipo === "dissertativa" ? "block" : "none";
       document.getElementById("secaoLinhas").style.display = tipo === "dissertativa" ? "block" : "none";
     }
@@ -1132,14 +1220,57 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       return html;
     }
 
+    function numeroRomano(numero) {
+      const valores = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+      let n = Number(numero) + 1;
+      let resultado = "";
+      for (const [valor, simbolo] of valores) while (n >= valor) { resultado += simbolo; n -= valor; }
+      return resultado;
+    }
+    
+    
+        function marcadorColunaA(indice, estilo) {
+      if (estilo === "romano") return numeroRomano(indice) + ".";
+      if (estilo === "letra") return indiceParaLetra(indice) + ".";
+      return String(indice + 1) + ".";
+    }
+
+    function obterItensColuna(id) {
+      const campo = document.getElementById(id);
+      if (!campo) return [];
+      return campo.value.split(/\r?\n/).map(item => item.trim()).filter(Boolean);
+    }
+
     /* RENDERIZAÇÃO DA QUESTÃO NO DOCUMENTO */
     function gerarHtmlQuestao(q, numeroAuto = null) {
       let prefixoTitulo = numeroAuto !== null ? `QUESTÃO ${numeroAuto}` : (q.titulo || "QUESTÃO");
       let enunciadoFormatado = formatarTextoLatex(q.enunciado);
       let html = `<div class='questao-titulo'>${prefixoTitulo}</div><p>${enunciadoFormatado}</p>`;
       html += gerarHtmlSubquestoes(q);
-
-      if (q.tipo === "multipla") {
+      
+            if (q.tipo === "relacionar") {
+        const colunaA = Array.isArray(q.colunaA) ? q.colunaA : [];
+        const colunaB = Array.isArray(q.colunaB) ? q.colunaB : [];
+        const estilo = q.estiloNumeracaoColunaA || "ordinal";
+        
+        html += `<div class="associar-documento">
+          <div class="associar-documento-coluna">`;
+        colunaA.forEach((texto, i) => {
+          html += `<div class="associar-documento-item">
+            <span class="associar-documento-marcador">${marcadorColunaA(i, estilo)}</span>
+            <span class="associar-texto-item">${formatarTextoLatex(String(texto))}</span>
+          </div>`;
+        });
+        html += `</div><div class="associar-documento-coluna">`;
+        colunaB.forEach((texto) => {
+          html += `<div class="associar-documento-item">
+            <span class="associar-resposta-vazia">( &nbsp; )</span>
+            <span class="associar-texto-item">${formatarTextoLatex(String(texto))}</span>
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+      else if (q.tipo === "multipla") {
         const letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
         
         let rawAlts = [q.altA, q.altB, q.altC, q.altD, q.altE];
@@ -1153,7 +1284,7 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
             html += `<div class="alternativa-item">${letra}) ( &nbsp; ) ${formatarTextoLatex(texto)}</div>`;
           });
           html += `</div>`;
-        }
+        } 
       } else if (q.tipo === "ce") {
         html += "<p>CERTO ( ) &nbsp;&nbsp; ERRADO ( )</p>";
       } else if (q.tipo === "vf") {
@@ -1190,6 +1321,10 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       let corretaMultipla = document.getElementById("corretaMultipla").value;
       let respostaCE = document.getElementById("respostaCE").value;
       let respostaVF = document.getElementById("respostaVF").value;
+      let colunaA = obterItensColuna("colunaA");
+      let colunaB = obterItensColuna("colunaB");
+      let estiloNumeracaoColunaA = document.getElementById("estiloNumeracaoColunaA").value || "ordinal";
+      if (tipo === "relacionar") gabarito = document.getElementById("gabaritoAssociar").value.trim();
       let subquestoes = obterSubquestoesDoFormulario();
       let subquestoesEspacos = obterEspacosSubquestoesDoFormulario();
 
@@ -1200,7 +1335,7 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       let dadosQuestao = {
         id: questaoEmEdicaoId !== null ? questaoEmEdicaoId : Date.now(),
         titulo, enunciado, tipo, gabarito, espaco, calculo,
-        altA, altB, altC, altD, altE, corretaMultipla, respostaCE, respostaVF, subquestoes, subquestoesEspacos
+        altA, altB, altC, altD, altE, corretaMultipla, respostaCE, respostaVF, subquestoes, subquestoesEspacos, colunaA, colunaB, estiloNumeracaoColunaA
       };
 
       // Edição iniciada diretamente pelo Banco de Questões:
@@ -1251,6 +1386,10 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       document.getElementById("corretaMultipla").value = q.corretaMultipla || "";
       document.getElementById("respostaCE").value = q.respostaCE || "";
       document.getElementById("respostaVF").value = q.respostaVF || "";
+      document.getElementById("colunaA").value = Array.isArray(q.colunaA) ? q.colunaA.join("\n") : "";
+      document.getElementById("colunaB").value = Array.isArray(q.colunaB) ? q.colunaB.join("\n") : "";
+      document.getElementById("estiloNumeracaoColunaA").value = q.estiloNumeracaoColunaA || "ordinal";
+      document.getElementById("gabaritoAssociar").value = q.tipo === "relacionar" ? (q.gabarito || "") : "";
       const campoSubquestoes = document.getElementById("subquestoes");
       if (campoSubquestoes) campoSubquestoes.value = Array.isArray(q.subquestoes) ? q.subquestoes.join("\n") : "";
 
@@ -1298,6 +1437,10 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       document.getElementById("corretaMultipla").value = "";
       document.getElementById("respostaCE").value = "";
       document.getElementById("respostaVF").value = "";
+      document.getElementById("colunaA").value = "";
+      document.getElementById("colunaB").value = "";
+      document.getElementById("estiloNumeracaoColunaA").value = "ordinal";
+      document.getElementById("gabaritoAssociar").value = "";
       const campoSubquestoes = document.getElementById("subquestoes");
       if (campoSubquestoes) campoSubquestoes.value = "";
       
@@ -1537,6 +1680,10 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
       document.getElementById("corretaMultipla").value = q.corretaMultipla || "";
       document.getElementById("respostaCE").value = q.respostaCE || "";
       document.getElementById("respostaVF").value = q.respostaVF || "";
+      document.getElementById("colunaA").value = Array.isArray(q.colunaA) ? q.colunaA.join("\n") : "";
+      document.getElementById("colunaB").value = Array.isArray(q.colunaB) ? q.colunaB.join("\n") : "";
+      document.getElementById("estiloNumeracaoColunaA").value = q.estiloNumeracaoColunaA || "ordinal";
+      document.getElementById("gabaritoAssociar").value = q.tipo === "relacionar" ? (q.gabarito || "") : "";
 
       alternarCamposTipo();
       atualizarPreviewLatex();
