@@ -1757,8 +1757,6 @@ Proporção de ocorrências"></textarea>
       `;
     }
     
-    
-    
         function renderizarBancoQuestoes() {
       let lista = document.getElementById("listaBancoQuestoes");
       let banco = JSON.parse(localStorage.getItem("bancoQuestoes") || "[]");
@@ -1792,10 +1790,6 @@ Proporção de ocorrências"></textarea>
               </small>
             </div>
           </div>
-          <div style="display:flex; gap:6px; flex-shrink:0;">
-            <button class="btn-edit" onclick="editarQuestaoBancoDireto(${q.id})">✏️ Editar</button>
-            <button class="btn-delete" onclick="excluirQuestaoBanco(${q.id})">🗑 Excluir</button>
-          </div>
         `;
         lista.appendChild(div);
 
@@ -1809,6 +1803,7 @@ Proporção de ocorrências"></textarea>
         });
       });
     }
+
         function editarQuestaoBancoDireto(id) {
       const banco = JSON.parse(localStorage.getItem("bancoQuestoes") || "[]");
       const q = banco.find(item => Number(item.id) === Number(id));
