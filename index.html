@@ -154,7 +154,12 @@
     .subquestao-config-row select { width:auto !important; min-width:125px; margin:0 !important; padding:7px 8px !important; background:#f8fafc; }
     .questao-titulo { font-weight: bold; color: #1b365d; margin-bottom: 4px; border-left: 3px solid #2b6cb0; padding-left: 5px; break-after: avoid; }
     .alternativas-lista { margin-top: 4px; margin-bottom: 6px; padding-left: 2px; }
-    .alternativa-item { margin-bottom: 2px; text-align: left; }
+    .alternativas-lista.horizontal { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: 14px; row-gap: 4px; }
+    .alternativas-lista.horizontal .alternativa-item { flex: 0 1 auto; max-width: 100%; }
+    .alternativas-lista.vertical { display: block; }
+    .alternativa-item { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 4px; align-items: start; margin-bottom: 2px; text-align: left; }
+    .alternativa-letra { font-weight: bold; white-space: nowrap; }
+    .alternativa-texto { min-width: 0; overflow-wrap: anywhere; }
     .associar-editor-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:10px; }
     .associar-editor-coluna { min-width:0; background:#fff; border:1px solid #cbd5e0; border-radius:7px; padding:9px; }
     .associar-editor-coluna strong { display:block; color:#1b365d; margin-bottom:6px; }
@@ -778,6 +783,11 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
             
             <div id="secaoMultiplaEscolha" style="display:none; border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #edf2f7;">
               <strong style="color: #1b365d;">Alternativas:</strong>
+              <label for="orientacaoAlternativas">Disposição das alternativas na prova</label>
+              <select id="orientacaoAlternativas" style="margin-bottom:10px;">
+                <option value="horizontal">Horizontal (economiza espaço)</option>
+                <option value="vertical">Vertical (mais espaço para cálculos)</option>
+              </select>
               <label for="altA">A)</label><input type="text" id="altA" placeholder="Texto da alternativa A">
               <label for="altB">B)</label><input type="text" id="altB" placeholder="Texto da alternativa B">
               <label for="altC">C)</label><input type="text" id="altC" placeholder="Texto da alternativa C">
@@ -1290,10 +1300,11 @@ Proporção de ocorrências"></textarea>
         alternativasValidas.sort((a, b) => a.trim().localeCompare(b.trim(), 'pt-BR'));
 
         if (alternativasValidas.length > 0) {
-          html += `<div class="alternativas-lista">`;
+          const orientacao = q.orientacaoAlternativas === "vertical" ? "vertical" : "horizontal";
+          html += `<div class="alternativas-lista ${orientacao}">`;
           alternativasValidas.forEach((texto, i) => {
             const letra = letras[i] || `${i + 1}`;
-            html += `<div class="alternativa-item">${letra}) ( &nbsp; ) ${formatarTextoLatex(texto)}</div>`;
+            html += `<div class="alternativa-item"><span class="alternativa-letra">${letra})</span><span class="alternativa-texto">${formatarTextoLatex(texto)}</span></div>`;
           });
           html += `</div>`;
         } 
@@ -1331,6 +1342,7 @@ Proporção de ocorrências"></textarea>
       let altD = document.getElementById("altD").value.trim();
       let altE = document.getElementById("altE").value.trim();
       let corretaMultipla = document.getElementById("corretaMultipla").value;
+      let orientacaoAlternativas = document.getElementById("orientacaoAlternativas").value || "horizontal";
       let respostaCE = document.getElementById("respostaCE").value;
       let respostaVF = document.getElementById("respostaVF").value;
       let colunaA = obterItensColuna("colunaA");
@@ -1347,7 +1359,7 @@ Proporção de ocorrências"></textarea>
       let dadosQuestao = {
         id: questaoEmEdicaoId !== null ? questaoEmEdicaoId : Date.now(),
         titulo, enunciado, tipo, gabarito, espaco, calculo,
-        altA, altB, altC, altD, altE, corretaMultipla, respostaCE, respostaVF, subquestoes, subquestoesEspacos, colunaA, colunaB, estiloNumeracaoColunaA
+        altA, altB, altC, altD, altE, corretaMultipla, orientacaoAlternativas, respostaCE, respostaVF, subquestoes, subquestoesEspacos, colunaA, colunaB, estiloNumeracaoColunaA
       };
 
       // Edição iniciada diretamente pelo Banco de Questões:
@@ -1396,6 +1408,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("altD").value = q.altD || "";
       document.getElementById("altE").value = q.altE || "";
       document.getElementById("corretaMultipla").value = q.corretaMultipla || "";
+      document.getElementById("orientacaoAlternativas").value = q.orientacaoAlternativas === "vertical" ? "vertical" : "horizontal";
       document.getElementById("respostaCE").value = q.respostaCE || "";
       document.getElementById("respostaVF").value = q.respostaVF || "";
       document.getElementById("colunaA").value = Array.isArray(q.colunaA) ? q.colunaA.join("\n") : "";
@@ -1447,6 +1460,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("altD").value = "";
       document.getElementById("altE").value = "";
       document.getElementById("corretaMultipla").value = "";
+      document.getElementById("orientacaoAlternativas").value = "horizontal";
       document.getElementById("respostaCE").value = "";
       document.getElementById("respostaVF").value = "";
       document.getElementById("colunaA").value = "";
@@ -1717,6 +1731,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("altD").value = q.altD || "";
       document.getElementById("altE").value = q.altE || "";
       document.getElementById("corretaMultipla").value = q.corretaMultipla || "";
+      document.getElementById("orientacaoAlternativas").value = q.orientacaoAlternativas === "vertical" ? "vertical" : "horizontal";
       document.getElementById("respostaCE").value = q.respostaCE || "";
       document.getElementById("respostaVF").value = q.respostaVF || "";
       document.getElementById("colunaA").value = Array.isArray(q.colunaA) ? q.colunaA.join("\n") : "";
@@ -1829,6 +1844,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("altD").value = q.altD || "";
       document.getElementById("altE").value = q.altE || "";
       document.getElementById("corretaMultipla").value = q.corretaMultipla || "";
+      document.getElementById("orientacaoAlternativas").value = q.orientacaoAlternativas === "vertical" ? "vertical" : "horizontal";
       document.getElementById("respostaCE").value = q.respostaCE || "";
       document.getElementById("respostaVF").value = q.respostaVF || "";
       document.getElementById("colunaA").value = Array.isArray(q.colunaA) ? q.colunaA.join("\n") : "";
