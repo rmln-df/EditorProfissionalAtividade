@@ -621,6 +621,27 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
             <button class="btn" type="button" onclick="alternarPainelLatex()" style="background:#2b6cb0; color:white; width:100%; padding:8px; margin-bottom:8px;">
               ∑ Inserir Funções Matemática (LaTeX)
             </button>
+            <div id="painelImagemEnunciado" style="border:1px solid #2b6cb0; padding:12px; border-radius:6px; margin:10px 0 12px; background:#f0f4f8;">
+              <strong style="color:#1b365d; display:block; margin-bottom:8px;">🖼️ Inserir imagem ou figura no enunciado</strong>
+              <label for="larguraImagemEnunciado" style="display:block; margin:0 0 4px; font-size:9pt;">Largura na prova</label>
+              <select id="larguraImagemEnunciado" style="width:100%; padding:9px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; background:#fff;">
+                <option value="25%">Pequena — 25%</option>
+                <option value="50%">Média — 50%</option>
+                <option value="75%" selected>Grande — 75%</option>
+                <option value="100%">Largura total — 100%</option>
+              </select>
+              <label for="alinhamentoImagemEnunciado" style="display:block; margin:0 0 4px; font-size:9pt;">Posição e alinhamento com o texto</label>
+              <select id="alinhamentoImagemEnunciado" style="width:100%; padding:9px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; background:#fff;">
+                <option value="centro">Centralizada (texto acima e abaixo)</option>
+                <option value="esquerda">À esquerda (texto ao lado direito)</option>
+                <option value="direita">À direita (texto ao lado esquerdo)</option>
+              </select>
+              <input type="file" id="arquivoImagemEnunciado" accept="image/*" style="display:none" onchange="inserirImagemNoEnunciado(event)">
+              <button type="button" class="btn" style="display:block; width:100%; padding:10px; margin-bottom:8px; background:#2b6cb0; color:white;" onclick="document.getElementById('arquivoImagemEnunciado').click()">📷 Escolher imagem do dispositivo</button>
+              <button type="button" class="btn" style="display:block; width:100%; padding:10px; background:#c53030; color:white;" onclick="removerImagensDoEnunciado()">🗑️ Remover imagem(ns) do enunciado</button>
+              <small style="display:block; color:#4a5568; line-height:1.35; margin-top:6px;">A imagem será reduzida e inserida no ponto do cursor. Para deixar o enunciado ao lado, escolha esquerda ou direita; imagens laterais usam no máximo metade da largura. O botão vermelho remove as imagens inseridas do dispositivo, sem apagar o texto nem as figuras geométricas.</small>
+            </div>
+
             <div style="margin-top:10px;">
               <span style="font-size: 8.5pt; font-weight: bold; color: #1b365d;">Pré-visualização do Enunciado:</span>
               <div id="latexPreview" class="latex-preview-box"></div>
@@ -990,6 +1011,92 @@ Proporção de ocorrências"></textarea>
       }
     }
 
+    function inserirImagemNoEnunciado(event) {
+      const input = event?.target || document.getElementById("arquivoImagemEnunciado");
+      const arquivo = input?.files?.[0];
+      if (!arquivo) return;
+      if (!arquivo.type.startsWith("image/")) {
+        alert("Escolha um arquivo de imagem válido.");
+        input.value = "";
+        return;
+      }
+
+      const leitor = new FileReader();
+      leitor.onload = function() {
+        const imagem = new Image();
+        imagem.onload = function() {
+          const limite = 1400;
+          const fator = Math.min(1, limite / Math.max(imagem.width, imagem.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(imagem.width * fator));
+          canvas.height = Math.max(1, Math.round(imagem.height * fator));
+          const contexto = canvas.getContext("2d");
+          if (!contexto) {
+            alert("Não foi possível preparar essa imagem. Tente outro arquivo.");
+            input.value = "";
+            return;
+          }
+          // Fundo branco evita transparências pretas no PDF; dimensões limitadas reduzem o peso do arquivo.
+          contexto.fillStyle = "#ffffff";
+          contexto.fillRect(0, 0, canvas.width, canvas.height);
+          contexto.drawImage(imagem, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+          const alinhamento = document.getElementById("alinhamentoImagemEnunciado")?.value || "centro";
+          let largura = document.getElementById("larguraImagemEnunciado")?.value || "75%";
+          let tagImagem;
+          if (alinhamento === "esquerda" || alinhamento === "direita") {
+            // O marcador permite renderizar figura e enunciado em colunas reais,
+            // independente de a imagem ter sido inserida antes ou depois do texto.
+            const larguraPercentual = Math.min(parseFloat(largura) || 25, 50);
+            tagImagem = `<img data-enunciado-img="${alinhamento}" src="${dataUrl}" alt="Figura da questão" style="width:${larguraPercentual}%; max-width:50%; max-height:160mm; height:auto; object-fit:contain;">`;
+          } else {
+            tagImagem = `<div style="display:block; clear:both; text-align:center; margin:8px 0;"><img src="${dataUrl}" alt="Figura da questão" style="display:inline-block; width:${largura}; max-width:100%; max-height:160mm; height:auto; object-fit:contain;"></div>`;
+          }
+          const textarea = document.getElementById("enunciado");
+          const inicio = textarea.selectionStart ?? textarea.value.length;
+          const fim = textarea.selectionEnd ?? inicio;
+          const antes = textarea.value.slice(0, inicio);
+          const depois = textarea.value.slice(fim);
+          const separadorAntes = antes && !antes.endsWith("\n") ? "\n" : "";
+          const separadorDepois = depois && !depois.startsWith("\n") ? "\n" : "";
+          const insercao = separadorAntes + tagImagem + separadorDepois;
+          textarea.value = antes + insercao + depois;
+          const novaPosicao = antes.length + insercao.length;
+          textarea.focus();
+          textarea.setSelectionRange(novaPosicao, novaPosicao);
+          atualizarPreviewLatex();
+          input.value = "";
+        };
+        imagem.onerror = function() {
+          alert("Não foi possível abrir essa imagem. Tente escolher outro arquivo.");
+          input.value = "";
+        };
+        imagem.src = leitor.result;
+      };
+      leitor.onerror = function() {
+        alert("Não foi possível ler esse arquivo de imagem.");
+        input.value = "";
+      };
+      leitor.readAsDataURL(arquivo);
+    }
+
+    function removerImagensDoEnunciado() {
+      const textarea = document.getElementById("enunciado");
+      if (!textarea) return;
+      const origem = textarea.value;
+      // Remove apenas as imagens escolhidas pelo usuário neste painel;
+      // não altera texto, LaTeX nem SVGs das figuras geométricas.
+      const limpo = origem.replace(/<div style="text-align:center; margin:8px 0;"><img src="data:image[^"]+" alt="Figura da questão" style="[^"]+"><\/div>/g, "")
+        .replace(/<img data-enunciado-img="(?:esquerda|direita)" src="data:image[^"]+" alt="Figura da questão" style="[^"]+">/g, "")
+        .replace(/\n{3,}/g, "\n\n");
+      if (limpo === origem) {
+        alert("Não há imagens inseridas pelo botão para remover neste enunciado.");
+        return;
+      }
+      textarea.value = limpo;
+      atualizarPreviewLatex();
+    }
+
     function inserirLatex(codigo) {
       const textarea = document.getElementById("enunciado");
       const start = textarea.selectionStart;
@@ -1008,7 +1115,7 @@ Proporção de ocorrências"></textarea>
       const texto = document.getElementById("enunciado").value;
       const preview = document.getElementById("latexPreview");
       if (preview) {
-        let html = formatarTextoLatex(texto);
+        let html = gerarHtmlEnunciadoComImagem(texto);
         const subquestoes = obterSubquestoesDoFormulario();
         if (subquestoes.length) {
           html += gerarHtmlSubquestoes({ subquestoes, subquestoesEspacos: obterEspacosSubquestoesDoFormulario() });
@@ -1263,11 +1370,40 @@ Proporção de ocorrências"></textarea>
       return campo.value.split(/\r?\n/).map(item => item.trim()).filter(Boolean);
     }
 
+    function gerarHtmlEnunciadoComImagem(enunciado) {
+      const bruto = String(enunciado || "");
+      const imagensLaterais = [];
+      // Compatível com as novas imagens marcadas e com imagens laterais do arquivo anterior.
+      const textoSemImagens = bruto.replace(/<img\b[^>]*>/gi, (tag) => {
+        const marcador = tag.match(/\bdata-enunciado-img=["'](esquerda|direita)["']/i);
+        const estilo = tag.match(/\bstyle=["']([^"']*)["']/i);
+        const ladoAntigo = estilo && estilo[1].match(/float\s*:\s*(left|right)/i);
+        if (!marcador && !ladoAntigo) return tag;
+        const lado = marcador ? marcador[1].toLowerCase() : (ladoAntigo[1].toLowerCase() === "left" ? "esquerda" : "direita");
+        const src = (tag.match(/\bsrc=["']([^"']*)["']/i) || [])[1] || "";
+        const alt = (tag.match(/\balt=["']([^"']*)["']/i) || [])[1] || "Figura da questão";
+        if (src) imagensLaterais.push({ src, alt, lado });
+        return "";
+      });
+
+      const texto = formatarTextoLatex(textoSemImagens);
+      if (!imagensLaterais.length) return texto;
+
+      const lado = imagensLaterais[0].lado;
+      const imagensHtml = imagensLaterais.map(imagem =>
+        `<img src="${imagem.src}" alt="${imagem.alt}" style="display:block; width:100%; max-width:100%; max-height:90mm; height:auto; object-fit:contain; margin:0 auto 6px;">`
+      ).join("");
+      const celulaImagem = `<td style="width:38%; vertical-align:top; padding:0 8px 0 0;">${imagensHtml}</td>`;
+      const celulaTexto = `<td style="width:62%; vertical-align:top; text-align:left; overflow-wrap:anywhere;">${texto}</td>`;
+      const colunas = lado === "direita" ? celulaTexto + celulaImagem : celulaImagem + celulaTexto;
+      return `<table role="presentation" style="width:100%; table-layout:fixed; border-collapse:collapse; margin:4px 0 8px;"><tbody><tr>${colunas}</tr></tbody></table>`;
+    }
+
     /* RENDERIZAÇÃO DA QUESTÃO NO DOCUMENTO */
     function gerarHtmlQuestao(q, numeroAuto = null) {
       let prefixoTitulo = numeroAuto !== null ? `QUESTÃO ${numeroAuto}` : (q.titulo || "QUESTÃO");
-      let enunciadoFormatado = formatarTextoLatex(q.enunciado);
-      let html = `<div class='questao-titulo'>${prefixoTitulo}</div><p>${enunciadoFormatado}</p>`;
+      let enunciadoFormatado = gerarHtmlEnunciadoComImagem(q.enunciado);
+      let html = `<div class='questao-titulo'>${prefixoTitulo}</div><div>${enunciadoFormatado}</div><div style='clear:both'></div>`;
       html += gerarHtmlSubquestoes(q);
       
             if (q.tipo === "relacionar") {
