@@ -29,7 +29,7 @@
     body { font-family: Arial, sans-serif; background-color: #525659; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; }
     
     /* CONTROLES E BOTÕES DO TOPO */
-    .controls { position: fixed; top: 0; left: 0; right: 0; z-index: 10000; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 15px; background: #1b365d; color: white; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+    .controls { position: sticky; top: 0; left: 0; right: 0; z-index: 10000; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 15px; background: #1b365d; color: white; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
     .controls-top { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
     
     .btn { background-color: #ffffff; color: #1b365d; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 10pt; transition: background 0.2s; }
@@ -40,7 +40,7 @@
     .btn-edit { background-color: #006400; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 8pt; margin-right: 5px; }
     .btn-delete { background-color: #c53030; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 8pt; }
     
-    .page-scaler { width: 100%; margin-top: 105px; padding: 15px 0 50px 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: hidden; }
+    .page-scaler { width: 100%; margin-top: 0; padding: 15px 0 50px 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: hidden; }
     #documento-paginado { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
     
     .page-wrapper {
@@ -120,23 +120,27 @@
     .student-info table { width: 100%; border-collapse: collapse; }
     .continuation-bar { font-size: 8pt; color: #555; display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 10px; flex-shrink: 0; }
     
-    /* DUAS COLUNAS REAIS */
+    /* Layout da folha A4: coluna única ou duas colunas com divisória. */
     .columns-container {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      column-gap: 24px;
+      grid-template-columns: minmax(0, 1fr);
+      column-gap: 0;
       width: 100%;
       overflow: hidden;
       box-sizing: border-box;
       flex: 1 1 auto;
       min-height: 0;
     }
+    .columns-container.com-duas-colunas {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 24px;
+    }
     .coluna-prova {
       min-width: 0;
       min-height: 0;
       overflow: hidden;
     }
-    .coluna-prova + .coluna-prova {
+    .columns-container.com-duas-colunas .coluna-prova + .coluna-prova {
       border-left: 1px solid #000000;
       padding-left: 12px;
     }
@@ -549,6 +553,15 @@
             <input type="date" id="data">
           
             <div class="campo-formulario">
+              <label for="layoutFolha">📄 Layout da folha A4</label>
+              <select id="layoutFolha" onchange="alterarLayoutFolha()">
+                <option value="unica">Uma coluna — sem divisória</option>
+                <option value="duas">Duas colunas — com divisória</option>
+              </select>
+              <small style="display:block; color:#666; margin-top:-8px; margin-bottom:10px;">Escolha se as questões usarão toda a largura da folha ou duas colunas separadas por uma linha.</small>
+            </div>
+
+            <div class="campo-formulario">
               <label for="estiloCabecalho">🎨 Estilo do Cabeçalho</label>
 
               <select id="estiloCabecalho" onchange="alterarEstiloCabecalho()">
@@ -942,6 +955,7 @@ Proporção de ocorrências"></textarea>
           <span id="page-indicator" style="font-size: 9pt; font-weight: bold;">Folha 1 de 1</span>
           <button class="btn" id="btn-next" onclick="irParaPagina(paginaAtual + 1)">Próxima →</button>
         </div>
+        <button class="btn btn-full" id="btnTrocarLayoutVisualizacao" style="background-color:#276749; color:white;" onclick="alternarLayoutVisualizacao()">📄 Trocar para 2 colunas com divisória</button>
         <button class="btn btn-full" id="btnDownloadPDF" style="background-color: #2b6cb0; color:white;" onclick="gerarPDFDireto()">📥 Baixar PDF</button>
       </div>
 
@@ -1147,6 +1161,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("professor").value = "";
       document.getElementById("turma").value = "";
       document.getElementById("data").value = "";
+      document.getElementById("layoutFolha").value = "unica";
       
       const estiloSalvo = localStorage.getItem("estiloCabecalho") || "azul";
       const seletorEstilo = document.getElementById("estiloCabecalho");
@@ -1721,6 +1736,7 @@ Proporção de ocorrências"></textarea>
         turma: document.getElementById("turma").value,
         data: document.getElementById("data").value,
         estiloCabecalho: document.getElementById("estiloCabecalho")?.value || "azul",
+        layoutFolha: document.getElementById("layoutFolha")?.value || "unica",
         logoInstituicao: localStorage.getItem("logoInstituicao") || "",
         questoes: questoesArray
       };
@@ -1782,6 +1798,8 @@ Proporção de ocorrências"></textarea>
       if (seletorEstilo) {
         seletorEstilo.value = prova.estiloCabecalho || "azul";
       }
+      const seletorLayout = document.getElementById("layoutFolha");
+      if (seletorLayout) seletorLayout.value = prova.layoutFolha || "unica";
       
       if (prova.logoInstituicao) {
         localStorage.setItem("logoInstituicao", prova.logoInstituicao);
@@ -2179,7 +2197,9 @@ Proporção de ocorrências"></textarea>
           } else {
             coluna.removeChild(questaoElem);
 
-            if (colunaAtual === 0) {
+            // Em duas colunas, tenta primeiro a coluna direita; em coluna única,
+            // ou após preencher a segunda coluna, continua na próxima folha.
+            if (colunas.length > 1 && colunaAtual === 0) {
               colunaAtual = 1;
             } else {
               paginaIndex++;
@@ -2205,6 +2225,10 @@ Proporção de ocorrências"></textarea>
       }
     }
     
+    function alterarLayoutFolha() {
+      paginarDocumento();
+    }
+
     function criarEstruturaPagina(numPagina) {
       const page = document.createElement('div');
       page.className = 'a4-page';
@@ -2264,11 +2288,15 @@ Proporção de ocorrências"></textarea>
         alturaColuna = 'calc(297mm - 32mm)';
       }
 
+      const layoutFolha = document.getElementById("layoutFolha")?.value || "unica";
+      const classeLayout = layoutFolha === "duas" ? " com-duas-colunas" : "";
+      const segundaColuna = layoutFolha === "duas" ? '<div class="coluna-prova"></div>' : '';
+
       page.innerHTML = `
         ${headerHtml}
-        <div class="columns-container" style="height:${alturaColuna};">
+        <div class="columns-container${classeLayout}" style="height:${alturaColuna};">
           <div class="coluna-prova"></div>
-          <div class="coluna-prova"></div>
+          ${segundaColuna}
         </div>
       `;
       return page;
@@ -2339,7 +2367,28 @@ Proporção de ocorrências"></textarea>
 
       paginaAtual = 0;
       paginarDocumento();
+      atualizarBotaoLayoutVisualizacao();
       window.scrollTo(0, 0);
+    }
+
+    function atualizarBotaoLayoutVisualizacao() {
+      const botao = document.getElementById("btnTrocarLayoutVisualizacao");
+      const seletor = document.getElementById("layoutFolha");
+      if (!botao || !seletor) return;
+      const duasColunas = seletor.value === "duas";
+      botao.textContent = duasColunas
+        ? "📄 Trocar para 1 coluna sem divisória"
+        : "📄 Trocar para 2 colunas com divisória";
+    }
+
+    function alternarLayoutVisualizacao() {
+      const seletor = document.getElementById("layoutFolha");
+      if (!seletor) return;
+      seletor.value = seletor.value === "duas" ? "unica" : "duas";
+      paginarDocumento();
+      atualizarBotaoLayoutVisualizacao();
+      paginaAtual = 0;
+      irParaPagina(0);
     }
 
     function fecharVisualizacao() {
