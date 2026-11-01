@@ -553,15 +553,6 @@
             <input type="date" id="data">
           
             <div class="campo-formulario">
-              <label for="layoutFolha">📄 Layout da folha A4</label>
-              <select id="layoutFolha" onchange="alterarLayoutFolha()">
-                <option value="unica">Uma coluna — sem divisória</option>
-                <option value="duas">Duas colunas — com divisória</option>
-              </select>
-              <small style="display:block; color:#666; margin-top:-8px; margin-bottom:10px;">Escolha se as questões usarão toda a largura da folha ou duas colunas separadas por uma linha.</small>
-            </div>
-
-            <div class="campo-formulario">
               <label for="estiloCabecalho">🎨 Estilo do Cabeçalho</label>
 
               <select id="estiloCabecalho" onchange="alterarEstiloCabecalho()">
@@ -972,6 +963,7 @@ Proporção de ocorrências"></textarea>
     let questaoEmEdicaoId = null;
     let questaoBancoEmEdicaoId = null;
     let provaAtualId = null;
+    let layoutFolhaAtual = "unica";
 
     /* FUNÇÃO DE PARSER PARA LATEX (KATEX) */
     function formatarTextoLatex(texto) {
@@ -1161,7 +1153,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("professor").value = "";
       document.getElementById("turma").value = "";
       document.getElementById("data").value = "";
-      document.getElementById("layoutFolha").value = "unica";
+      layoutFolhaAtual = "unica";
       
       const estiloSalvo = localStorage.getItem("estiloCabecalho") || "azul";
       const seletorEstilo = document.getElementById("estiloCabecalho");
@@ -1736,7 +1728,7 @@ Proporção de ocorrências"></textarea>
         turma: document.getElementById("turma").value,
         data: document.getElementById("data").value,
         estiloCabecalho: document.getElementById("estiloCabecalho")?.value || "azul",
-        layoutFolha: document.getElementById("layoutFolha")?.value || "unica",
+        layoutFolha: layoutFolhaAtual || "unica",
         logoInstituicao: localStorage.getItem("logoInstituicao") || "",
         questoes: questoesArray
       };
@@ -1798,8 +1790,7 @@ Proporção de ocorrências"></textarea>
       if (seletorEstilo) {
         seletorEstilo.value = prova.estiloCabecalho || "azul";
       }
-      const seletorLayout = document.getElementById("layoutFolha");
-      if (seletorLayout) seletorLayout.value = prova.layoutFolha || "unica";
+      layoutFolhaAtual = prova.layoutFolha === "duas" ? "duas" : "unica";
       
       if (prova.logoInstituicao) {
         localStorage.setItem("logoInstituicao", prova.logoInstituicao);
@@ -2225,10 +2216,6 @@ Proporção de ocorrências"></textarea>
       }
     }
     
-    function alterarLayoutFolha() {
-      paginarDocumento();
-    }
-
     function criarEstruturaPagina(numPagina) {
       const page = document.createElement('div');
       page.className = 'a4-page';
@@ -2288,7 +2275,7 @@ Proporção de ocorrências"></textarea>
         alturaColuna = 'calc(297mm - 32mm)';
       }
 
-      const layoutFolha = document.getElementById("layoutFolha")?.value || "unica";
+      const layoutFolha = layoutFolhaAtual === "duas" ? "duas" : "unica";
       const classeLayout = layoutFolha === "duas" ? " com-duas-colunas" : "";
       const segundaColuna = layoutFolha === "duas" ? '<div class="coluna-prova"></div>' : '';
 
@@ -2373,18 +2360,15 @@ Proporção de ocorrências"></textarea>
 
     function atualizarBotaoLayoutVisualizacao() {
       const botao = document.getElementById("btnTrocarLayoutVisualizacao");
-      const seletor = document.getElementById("layoutFolha");
-      if (!botao || !seletor) return;
-      const duasColunas = seletor.value === "duas";
+      if (!botao) return;
+      const duasColunas = layoutFolhaAtual === "duas";
       botao.textContent = duasColunas
         ? "📄 Trocar para 1 coluna sem divisória"
         : "📄 Trocar para 2 colunas com divisória";
     }
 
     function alternarLayoutVisualizacao() {
-      const seletor = document.getElementById("layoutFolha");
-      if (!seletor) return;
-      seletor.value = seletor.value === "duas" ? "unica" : "duas";
+      layoutFolhaAtual = layoutFolhaAtual === "duas" ? "unica" : "duas";
       paginarDocumento();
       atualizarBotaoLayoutVisualizacao();
       paginaAtual = 0;
