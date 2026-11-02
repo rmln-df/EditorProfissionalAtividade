@@ -228,8 +228,11 @@
     .editor textarea { height: 100px; resize: vertical; }
 
     /* ESTILOS PAINEL LATEX */
-    .latex-panel { background: #f1f5f9; border: 1px solid #cbd5e0; border-radius: 6px; padding: 10px; margin-bottom: 12px; }
+    .latex-panel { background: #f1f5f9; border: 1px solid #cbd5e0; border-radius: 0 0 10px 10px; padding: 12px; margin: -4px 0 12px; box-shadow: 0 4px 10px rgba(27,54,93,.08); }
     .latex-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .preview-enunciado-card { margin: 8px 0 14px; padding: 10px 12px; border: 1px solid #b9cbe0; border-left: 4px solid #2b6cb0; border-radius: 8px; background: #f7faff; }
+    .preview-enunciado-titulo { display: block; margin-bottom: 6px; color: #1b365d; font-size: 9pt; font-weight: bold; }
+    .preview-enunciado-card .latex-preview-box { margin: 0; border: 1px dashed #9bb8d7; min-height: 42px; }
     .btn-latex { background: #ffffff; border: 1px solid #2b6cb0; color: #1b365d; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 8.5pt; font-weight: bold; transition: all 0.2s; }
     .btn-latex:hover { background: #2b6cb0; color: white; }
     .latex-preview-box { background: white; border: 1px dashed #2b6cb0; padding: 8px; border-radius: 4px; margin-top: 4px; margin-bottom: 12px; min-height: 35px; font-size: 10pt; }
@@ -609,47 +612,27 @@
             <label for="enunciado">Enunciado</label>
             <textarea id="enunciado" placeholder="Digite o texto da questão... (Use $...$ para equações na mesma linha e $$...$$ para linhas isoladas)" oninput="atualizarPreviewLatex()"></textarea>
 
+            <div class="preview-enunciado-card">
+              <span class="preview-enunciado-titulo">👁️ Pré-visualização do Enunciado</span>
+              <div id="latexPreview" class="latex-preview-box"></div>
+            </div>
+
             <div class="subquestoes-editor">
               <label for="subquestoes" style="margin-top:0;">Subquestões / Itens (a, b, c...)</label>
-              <textarea id="subquestoes" placeholder="Opcional. Digite uma subquestão por linha. Exemplo:
+              <textarea id="subquestoes" placeholder="
 a) Calcule o valor de x.
 b) Determine a área.
 c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
-              <small>As letras serão colocadas automaticamente. Você pode digitar apenas o texto, sem a letra. Ex.: “Calcule x” → <strong>a) Calcule x</strong>.</small>
+              <small>As letras serão colocadas automaticamente.→ <strong>a) Calcule x   </strong>.</small>
               <div id="subquestoesConfig" class="subquestoes-config" style="display:none;">
                 <div style="font-size:8.5pt; font-weight:bold; color:#1b365d; margin-bottom:7px;">Espaço para cada item:</div>
                 <div id="listaEspacosSubquestoes"></div>
               </div>
             </div>
 
-            <button class="btn" type="button" onclick="alternarPainelLatex()" style="background:#2b6cb0; color:white; width:100%; padding:8px; margin-bottom:8px;">
-              ∑ Inserir Funções Matemática (LaTeX)
+            <button class="btn" id="btnAlternarPainelLatex" type="button" aria-controls="painelLatex" aria-expanded="false" onclick="alternarPainelLatex()" style="background:#2b6cb0; color:white; width:100%; padding:10px; margin-bottom:4px;">
+              ∑ Inserir Funções Matemáticas (LaTeX) <span aria-hidden="true">▾</span>
             </button>
-            <div id="painelImagemEnunciado" style="border:1px solid #2b6cb0; padding:12px; border-radius:6px; margin:10px 0 12px; background:#f0f4f8;">
-              <strong style="color:#1b365d; display:block; margin-bottom:8px;">🖼️ Inserir imagem ou figura no enunciado</strong>
-              <label for="larguraImagemEnunciado" style="display:block; margin:0 0 4px; font-size:9pt;">Largura na prova</label>
-              <select id="larguraImagemEnunciado" style="width:100%; padding:9px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; background:#fff;">
-                <option value="25%">Pequena — 25%</option>
-                <option value="50%">Média — 50%</option>
-                <option value="75%" selected>Grande — 75%</option>
-                <option value="100%">Largura total — 100%</option>
-              </select>
-              <label for="alinhamentoImagemEnunciado" style="display:block; margin:0 0 4px; font-size:9pt;">Posição e alinhamento com o texto</label>
-              <select id="alinhamentoImagemEnunciado" style="width:100%; padding:9px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; background:#fff;">
-                <option value="centro">Centralizada (texto acima e abaixo)</option>
-                <option value="esquerda">À esquerda (texto ao lado direito)</option>
-                <option value="direita">À direita (texto ao lado esquerdo)</option>
-              </select>
-              <input type="file" id="arquivoImagemEnunciado" accept="image/*" style="display:none" onchange="inserirImagemNoEnunciado(event)">
-              <button type="button" class="btn" style="display:block; width:100%; padding:10px; margin-bottom:8px; background:#2b6cb0; color:white;" onclick="document.getElementById('arquivoImagemEnunciado').click()">📷 Escolher imagem do dispositivo</button>
-              <button type="button" class="btn" style="display:block; width:100%; padding:10px; background:#c53030; color:white;" onclick="removerImagensDoEnunciado()">🗑️ Remover imagem(ns) do enunciado</button>
-              <small style="display:block; color:#4a5568; line-height:1.35; margin-top:6px;">A imagem será reduzida e inserida no ponto do cursor. Para deixar o enunciado ao lado, escolha esquerda ou direita; imagens laterais usam no máximo metade da largura. O botão vermelho remove as imagens inseridas do dispositivo, sem apagar o texto nem as figuras geométricas.</small>
-            </div>
-
-            <div style="margin-top:10px;">
-              <span style="font-size: 8.5pt; font-weight: bold; color: #1b365d;">Pré-visualização do Enunciado:</span>
-              <div id="latexPreview" class="latex-preview-box"></div>
-            </div>
             <div id="painelLatex" class="latex-panel" style="display:none;">
               <span style="font-size: 8.5pt; font-weight: bold; color: #1b365d;">Clique no símbolo para inserir no Enunciado:</span>
               <div class="latex-grid">
@@ -723,6 +706,27 @@ c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
                 <button class="btn-latex" type="button" onclick="inserirLatex('\\textcolor{green}{palavra}')">texto verde</button>
              </div>
             </div>
+            <div id="painelImagemEnunciado" style="border:1px solid #2b6cb0; padding:12px; border-radius:6px; margin:10px 0 12px; background:#f0f4f8;">
+              <strong style="color:#1b365d; display:block; margin-bottom:8px;">🖼️ Inserir imagem ou figura no enunciado</strong>
+              <label for="larguraImagemEnunciado" style="display:block; margin:0 0 4px; font-size:9pt;">Largura na prova</label>
+              <select id="larguraImagemEnunciado" style="width:100%; padding:9px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; background:#fff;">
+                <option value="25%">Pequena — 25%</option>
+                <option value="50%">Média — 50%</option>
+                <option value="75%" selected>Grande — 75%</option>
+                <option value="100%">Largura total — 100%</option>
+              </select>
+              <label for="alinhamentoImagemEnunciado" style="display:block; margin:0 0 4px; font-size:9pt;">Posição e alinhamento com o texto</label>
+              <select id="alinhamentoImagemEnunciado" style="width:100%; padding:9px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; background:#fff;">
+                <option value="centro">Centralizada (texto acima e abaixo)</option>
+                <option value="esquerda">À esquerda (texto ao lado direito)</option>
+                <option value="direita">À direita (texto ao lado esquerdo)</option>
+              </select>
+              <input type="file" id="arquivoImagemEnunciado" accept="image/*" style="display:none" onchange="inserirImagemNoEnunciado(event)">
+              <button type="button" class="btn" style="display:block; width:100%; padding:10px; margin-bottom:8px; background:#2b6cb0; color:white;" onclick="document.getElementById('arquivoImagemEnunciado').click()">📷 Escolher imagem do dispositivo</button>
+              <button type="button" class="btn" style="display:block; width:100%; padding:10px; background:#c53030; color:white;" onclick="removerImagensDoEnunciado()">🗑️ Remover imagem(ns) do enunciado</button>
+              <small style="display:block; color:#4a5568; line-height:1.35; margin-top:6px;"> Opções, escolha esquerda, direita ou centralizado.</small>
+            </div>
+
               <!-- ÁREA DE FIGURAS GEOMÉTRICAS PARAMETRIZADAS -->
             <div class="painel-figura-geometrica" style="border: 1px solid #2b6cb0; padding: 12px; border-radius: 6px; margin-bottom: 12px; background: #f0f4f8;">
               <strong style="color: #1b365d; display: block; margin-bottom: 8px;">📐 Inserir Figura Geométrica com Medidas:</strong>
@@ -1010,8 +1014,15 @@ Proporção de ocorrências"></textarea>
 
     function alternarPainelLatex() {
       const painel = document.getElementById("painelLatex");
-      painel.style.display = (painel.style.display === "none" || painel.style.display === "") ? "block" : "none";
-      if (painel.style.display === "block") {
+      const botao = document.getElementById("btnAlternarPainelLatex");
+      const abrir = painel.style.display === "none" || painel.style.display === "";
+      painel.style.display = abrir ? "block" : "none";
+      if (botao) {
+        botao.setAttribute("aria-expanded", abrir ? "true" : "false");
+        botao.innerHTML = `∑ Inserir Funções Matemáticas (LaTeX) <span aria-hidden="true">${abrir ? "▴" : "▾"}</span>`;
+        botao.style.borderRadius = abrir ? "8px 8px 0 0" : "8px";
+      }
+      if (abrir) {
         atualizarPreviewLatex();
         atualizarPreviewGabarito();
       }
