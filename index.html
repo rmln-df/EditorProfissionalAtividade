@@ -625,17 +625,14 @@
             <textarea id="enunciado" placeholder="Digite o texto da questão... (Use $...$ para equações na mesma linha e $$...$$ para linhas isoladas)" oninput="atualizarPreviewLatex()"></textarea>
 
             <div class="preview-enunciado-card">
-              <span class="preview-enunciado-titulo">👁️ Pré-visualização do Enunciado</span>
+              <span class="preview-enunciado-titulo">👁️ Pré-visualização da Questão</span>
               <div id="latexPreview" class="latex-preview-box"></div>
             </div>
 
             <div class="subquestoes-editor">
               <label for="subquestoes" style="margin-top:0;">Subquestões / Itens (a, b, c...)</label>
-              <textarea id="subquestoes" placeholder="Opcional. Digite uma subquestão por linha. Exemplo:
-a) Calcule o valor de x.
-b) Determine a área.
-c) Justifique sua resposta." oninput="atualizarPreviewLatex()"></textarea>
-              <small>As letras serão colocadas automaticamente. Você pode digitar apenas o texto, sem a letra. Ex.: “Calcule x” → <strong>a) Calcule x</strong>.</small>
+              <textarea id="subquestoes" placeholder="Os itens serão colocadas automaticamente. Você pode digitar apenas o texto, sem a letra." oninput="atualizarPreviewLatex()"></textarea>
+              <small> <!--As letras serão colocadas automaticamente. Você pode digitar apenas o texto, sem a letra. Ex.: “Calcule x” → <strong>a) Calcule x</strong>.-->  </small>
               <div id="subquestoesConfig" class="subquestoes-config" style="display:none;">
                 <div style="font-size:8.5pt; font-weight:bold; color:#1b365d; margin-bottom:7px;">Espaço para cada item:</div>
                 <div id="listaEspacosSubquestoes"></div>
@@ -1141,17 +1138,39 @@ Proporção de ocorrências"></textarea>
     }
 
     function atualizarPreviewLatex() {
-      const texto = document.getElementById("enunciado").value;
       const preview = document.getElementById("latexPreview");
-      if (preview) {
-        let html = gerarHtmlEnunciadoComImagem(texto);
-        const subquestoes = obterSubquestoesDoFormulario();
-        if (subquestoes.length) {
-          html += gerarHtmlSubquestoes({ subquestoes, subquestoesEspacos: obterEspacosSubquestoesDoFormulario() });
-        }
-        preview.innerHTML = html;
-        atualizarEspacosSubquestoesUI();
-      }
+      if (!preview) return;
+
+      // Mantém os controles de espaço das subquestões sincronizados com os itens digitados.
+      atualizarEspacosSubquestoesUI();
+
+      const obterValor = (id) => document.getElementById(id)?.value || "";
+      const texto = obterValor("enunciado");
+      const tipo = obterValor("tipo") || "dissertativa";
+      const subquestoes = obterSubquestoesDoFormulario();
+      const valoresAlternativas = ["altA", "altB", "altC", "altD", "altE"].map(obterValor);
+      const colunaA = obterItensColuna("colunaA");
+      const colunaB = obterItensColuna("colunaB");
+
+      const questaoPreview = {
+        titulo: obterValor("titulo"),
+        tipo,
+        enunciado: texto,
+        subquestoes,
+        subquestoesEspacos: obterEspacosSubquestoesDoFormulario(),
+        altA: valoresAlternativas[0], altB: valoresAlternativas[1], altC: valoresAlternativas[2],
+        altD: valoresAlternativas[3], altE: valoresAlternativas[4],
+        orientacaoAlternativas: obterValor("orientacaoAlternativas") || "horizontal",
+        respostaCE: obterValor("respostaCE"),
+        respostaVF: obterValor("respostaVF"),
+        colunaA, colunaB,
+        estiloNumeracaoColunaA: obterValor("estiloNumeracaoColunaA") || "ordinal",
+        espaco: obterValor("espaco"),
+        calculo: !!document.getElementById("calculo")?.checked
+      };
+
+      // Usa o mesmo renderizador da prova para a prévia refletir cada tipo de questão.
+      preview.innerHTML = gerarHtmlQuestao(questaoPreview, null);
     }
     function atualizarPreviewGabarito() {
       const texto = document.getElementById("gabarito").value;
@@ -1303,6 +1322,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("secaoRelacionar").style.display = tipo === "relacionar" ? "block" : "none";
       document.getElementById("secaoGabaritoTexto").style.display = tipo === "dissertativa" ? "block" : "none";
       document.getElementById("secaoLinhas").style.display = tipo === "dissertativa" ? "block" : "none";
+      atualizarPreviewLatex();
     }
 
     function indiceParaLetra(indice) {
@@ -1332,6 +1352,11 @@ Proporção de ocorrências"></textarea>
       const config = document.getElementById("subquestoesConfig");
       const lista = document.getElementById("listaEspacosSubquestoes");
       if (!campo || !config || !lista) return;
+
+      // Ao reconstruir os seletores de espaço, conserva as escolhas que já estavam no formulário.
+      if (!Array.isArray(valoresExistentes) || valoresExistentes.length === 0) {
+        valoresExistentes = Array.from(document.querySelectorAll('.espaco-subquestao')).map(el => el.value);
+      }
 
       const textos = obterSubquestoesDoFormulario();
       if (!textos.length) {
@@ -2728,6 +2753,25 @@ Proporção de ocorrências"></textarea>
       atualizarBotoesRemoverAngulo();
       const tipo = document.getElementById("figuraTipo")?.value;
       if (tipo) atualizarCamposFigura();
+
+      // Atualiza a prévia completa conforme cada campo da questão é editado.
+      const camposPrevia = [
+        "titulo", "tipo", "enunciado", "subquestoes", "altA", "altB", "altC", "altD", "altE",
+        "orientacaoAlternativas", "respostaCE", "respostaVF", "colunaA", "colunaB",
+        "estiloNumeracaoColunaA", "gabaritoAssociar", "espaco", "calculo"
+      ];
+      camposPrevia.forEach(id => {
+        const campo = document.getElementById(id);
+        if (!campo) return;
+        campo.addEventListener("input", atualizarPreviewLatex);
+        campo.addEventListener("change", atualizarPreviewLatex);
+      });
+      const configSubquestoes = document.getElementById("listaEspacosSubquestoes");
+      if (configSubquestoes) {
+        configSubquestoes.addEventListener("change", atualizarPreviewLatex);
+        configSubquestoes.addEventListener("input", atualizarPreviewLatex);
+      }
+      atualizarPreviewLatex();
     });
 
     function obterAngulosFigura() {
