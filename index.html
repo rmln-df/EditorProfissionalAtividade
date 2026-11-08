@@ -635,6 +635,7 @@
             <label for="tipo">Tipo de Questão</label>
             <select id="tipo" onchange="alternarCamposTipo()">
               <option value="dissertativa">Dissertativa</option>
+              <option value="subquestoes">Subquestões / Itens (a, b, c...)</option>
               <option value="multipla">Múltipla Escolha</option>
               <option value="ce">Certo ou Errado</option>
               <option value="vf">Verdadeiro ou Falso</option>
@@ -649,7 +650,7 @@
               <div id="latexPreview" class="latex-preview-box"></div>
             </div>
 
-            <div class="subquestoes-editor">
+            <div id="secaoSubquestoes" class="subquestoes-editor" style="display:none;">
               <label for="subquestoes" style="margin-top:0;">Subquestões / Itens (a, b, c...)</label>
               <textarea id="subquestoes" placeholder="Os itens serão colocadas automaticamente. Você pode digitar apenas o texto, sem a letra." oninput="atualizarPreviewLatex()"></textarea>
               <small> <!--As letras serão colocadas automaticamente. Você pode digitar apenas o texto, sem a letra. Ex.: “Calcule x” → <strong>a) Calcule x</strong>.-->  </small>
@@ -1177,8 +1178,8 @@ Proporção de ocorrências"></textarea>
         titulo: obterValor("titulo"),
         tipo,
         enunciado: texto,
-        subquestoes,
-        subquestoesEspacos: obterEspacosSubquestoesDoFormulario(),
+        subquestoes: tipo === "subquestoes" ? subquestoes : [],
+        subquestoesEspacos: tipo === "subquestoes" ? obterEspacosSubquestoesDoFormulario() : [],
         altA: valoresAlternativas[0], altB: valoresAlternativas[1], altC: valoresAlternativas[2],
         altD: valoresAlternativas[3], altE: valoresAlternativas[4],
         orientacaoAlternativas: obterValor("orientacaoAlternativas") || "horizontal",
@@ -1338,6 +1339,8 @@ Proporção de ocorrências"></textarea>
     function alternarCamposTipo() {
       let tipo = document.getElementById("tipo").value;
       document.getElementById("secaoMultiplaEscolha").style.display = tipo === "multipla" ? "block" : "none";
+      const secaoSubquestoes = document.getElementById("secaoSubquestoes");
+      if (secaoSubquestoes) secaoSubquestoes.style.display = tipo === "subquestoes" ? "block" : "none";
       document.getElementById("secaoCertoErrado").style.display = tipo === "ce" ? "block" : "none";
       document.getElementById("secaoVerdadeiroFalso").style.display = tipo === "vf" ? "block" : "none";
       document.getElementById("secaoRelacionar").style.display = tipo === "relacionar" ? "block" : "none";
@@ -1480,7 +1483,9 @@ Proporção de ocorrências"></textarea>
       let prefixoTitulo = numeroAuto !== null ? `QUESTÃO ${numeroAuto}` : (q.titulo || "QUESTÃO");
       let enunciadoFormatado = gerarHtmlEnunciadoComImagem(q.enunciado);
       let html = `<div class='questao-titulo'>${prefixoTitulo}</div><div>${enunciadoFormatado}</div><div style='clear:both'></div>`;
-      html += gerarHtmlSubquestoes(q);
+      if (q.tipo === "subquestoes" || (q.tipo === "dissertativa" && Array.isArray(q.subquestoes) && q.subquestoes.length)) {
+        html += gerarHtmlSubquestoes(q);
+      }
       
             if (q.tipo === "relacionar") {
         const colunaA = Array.isArray(q.colunaA) ? q.colunaA : [];
@@ -1561,8 +1566,8 @@ Proporção de ocorrências"></textarea>
       let colunaB = obterItensColuna("colunaB");
       let estiloNumeracaoColunaA = document.getElementById("estiloNumeracaoColunaA").value || "ordinal";
       if (tipo === "relacionar") gabarito = document.getElementById("gabaritoAssociar").value.trim();
-      let subquestoes = obterSubquestoesDoFormulario();
-      let subquestoesEspacos = obterEspacosSubquestoesDoFormulario();
+      let subquestoes = tipo === "subquestoes" ? obterSubquestoesDoFormulario() : [];
+      let subquestoesEspacos = tipo === "subquestoes" ? obterEspacosSubquestoesDoFormulario() : [];
 
       if (tipo === "multipla" && corretaMultipla) gabarito = "Alternativa " + corretaMultipla;
       if (tipo === "ce" && respostaCE) gabarito = respostaCE;
@@ -1610,7 +1615,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("enunciado").value = q.enunciado || "";
       document.getElementById("subquestoes").value = Array.isArray(q.subquestoes) ? q.subquestoes.join("\n") : "";
       atualizarEspacosSubquestoesUI(Array.isArray(q.subquestoesEspacos) ? q.subquestoesEspacos : []);
-      document.getElementById("tipo").value = q.tipo || "dissertativa";
+      document.getElementById("tipo").value = (q.tipo === "dissertativa" && Array.isArray(q.subquestoes) && q.subquestoes.length) ? "subquestoes" : (q.tipo || "dissertativa");
       document.getElementById("gabarito").value = q.gabarito || "";
       document.getElementById("espaco").value = q.espaco || "0";
       document.getElementById("calculo").checked = !!q.calculo;
@@ -1935,7 +1940,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("enunciado").value = q.enunciado || "";
       document.getElementById("subquestoes").value = Array.isArray(q.subquestoes) ? q.subquestoes.join("\n") : "";
       atualizarEspacosSubquestoesUI(Array.isArray(q.subquestoesEspacos) ? q.subquestoesEspacos : []);
-      document.getElementById("tipo").value = q.tipo || "dissertativa";
+      document.getElementById("tipo").value = (q.tipo === "dissertativa" && Array.isArray(q.subquestoes) && q.subquestoes.length) ? "subquestoes" : (q.tipo || "dissertativa");
       document.getElementById("gabarito").value = q.gabarito || "";
       document.getElementById("espaco").value = q.espaco || "0";
       document.getElementById("calculo").checked = !!q.calculo;
@@ -2048,7 +2053,7 @@ Proporção de ocorrências"></textarea>
       document.getElementById("enunciado").value = q.enunciado || "";
       document.getElementById("subquestoes").value = Array.isArray(q.subquestoes) ? q.subquestoes.join("\n") : "";
       atualizarEspacosSubquestoesUI(Array.isArray(q.subquestoesEspacos) ? q.subquestoesEspacos : []);
-      document.getElementById("tipo").value = q.tipo || "dissertativa";
+      document.getElementById("tipo").value = (q.tipo === "dissertativa" && Array.isArray(q.subquestoes) && q.subquestoes.length) ? "subquestoes" : (q.tipo || "dissertativa");
       document.getElementById("gabarito").value = q.gabarito || "";
       document.getElementById("espaco").value = q.espaco || "0";
       document.getElementById("calculo").checked = !!q.calculo;
